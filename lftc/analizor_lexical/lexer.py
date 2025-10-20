@@ -8,6 +8,7 @@ class Lexer:
         self.line = 1
         self.column = 1
         self.tokens: List[Token] = []
+        self.err: List[str] = []
         
         # Cuvinte cheie și tipuri
         self.keywords = {
@@ -28,6 +29,7 @@ class Lexer:
             'true': TokenType.BOOLEAN_TRUE,
             'false': TokenType.BOOLEAN_FALSE,
         }
+        
     
     def current_char(self) -> Optional[str]:
         if self.position >= len(self.source):
@@ -72,6 +74,16 @@ class Lexer:
             while self.current_char() and self.current_char().isdigit():
                 num_str += self.current_char()
                 self.advance()
+
+        if self.current_char().isalpha() or self.current_char() == '.':
+            token_type = TokenType.ERROR
+            while self.current_char() and (self.current_char().isalnum() or self.current_char()=='.'):
+                num_str += self.current_char()
+                self.advance()
+            error_msg = f"ERR: LINE {start_line} COL {start_col}: invalid number: \"{num_str}\""
+            self.err.append(error_msg)
+            return Token(token_type, num_str, start_line, start_col)
+
         
         token_type = TokenType.DOUBLE_LITERAL if is_double else TokenType.INTEGER_LITERAL
         return Token(token_type, num_str, start_line, start_col)
@@ -85,6 +97,17 @@ class Lexer:
             identifier += self.current_char()
             self.advance()
         
+        if self.current_char() and self.current_char() not in ['+', '-', '*', '/', '=', ';',',', ' ', '<', '>', '(',')']:
+            while self.current_char() and self.current_char() not in ['+', '-', '*', '/', '=', ';',',', ' ', '>', '<','(',')']:
+                identifier += self.current_char()
+                self.advance()
+            error_msg = f"ERR: LINE {start_line} COL {start_col}: invalid identifier name: \"{identifier}\""
+            self.err.append(error_msg)
+            token_type = TokenType.ERROR
+            return Token(token_type, identifier, start_line, start_col)
+
+        
+
         # Verifică dacă este cuvânt cheie sau tip
         token_type = self.keywords.get(identifier, TokenType.IDENTIFIER)
         
@@ -113,8 +136,14 @@ class Lexer:
             
             # Operatori cu două caractere
             if char == '=' and self.peek_char() == '=':
-                self.tokens.append(Token(TokenType.EQ, "==", start_line, start_col))
                 self.advance()
+                if self.peek_char() == '=':
+                    self.tokens.append(Token(TokenType.ERROR, "===", start_line, start_col))
+                    error_msg = f"ERR: LINE {start_line} COL {start_col}: \"===\" is an invalid operator "
+                    self.err.append(error_msg)
+                    self.advance()
+                else:
+                    self.tokens.append(Token(TokenType.EQ, "==", start_line, start_col))
                 self.advance()
                 continue
             
@@ -186,6 +215,9 @@ class Lexer:
         for token in self.tokens:
             if token.type != TokenType.EOF:
                 print(token)
+
+        for error in self.err:
+            print(error)
 
     def get_identifiers_and_constants(self) -> List[Token]:
         ts_token = []

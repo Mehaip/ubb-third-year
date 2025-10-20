@@ -3,10 +3,10 @@
 using namespace std;
 
 int main(){
-    int a,b;
+    int a,b,23c;
     a = 5;
-    b = 10.5;
-    c = 69.69
+    b = 10.5.2;
+    c = 69.69;
     cout << a + b;
     
 }

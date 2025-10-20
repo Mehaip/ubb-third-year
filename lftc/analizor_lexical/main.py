@@ -2,7 +2,9 @@ from lexer import Lexer
 from bst import BSTNode
 
 if __name__ == "__main__":
-    input_file = input("Introdu numele fișierului de intrare (ex: program.txt): ")
+    input_file = input("Introdu numele fisierului txt: ")
+
+    input_file = "source_code/" + input_file + ".txt"
     
     try:
         # Citește codul din fișier
@@ -18,7 +20,7 @@ if __name__ == "__main__":
         # Tokenizează
         tokens = lexer.tokenize()
         ts_tokens = lexer.get_identifiers_and_constants()
-        
+    
         bst = BSTNode()
         for token in ts_tokens:
             bst.insert(token.value)
@@ -32,13 +34,13 @@ if __name__ == "__main__":
         print("Fisierul ts.txt completat!")
         # Afișează tokenurile
 
-        for token in tokens:
-            print(token.type.name)
-
         with open("data/fip.csv", "w") as f:
-            f.write("Atom lexical,Pozitie in TS\n")
+            f.write("Atom lexical,Value,Pozitie in TS\n")
             for token in tokens:
-                f.write(token.type.name + ",")
+                if token.type.value != ",":
+                    f.write(token.type.name + "," + token.value + ",")
+                else:
+                    f.write(token.type.name + "," + "commaValue,")
                 if lexer.is_identifier_or_constant(token.type.name):
                     f.write(str(bst_sorted.index(token.value) + 1))
                 else:

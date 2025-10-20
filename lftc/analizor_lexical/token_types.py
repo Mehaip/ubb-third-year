@@ -65,6 +65,7 @@ class TokenType(Enum):
     # Altele
     EOF = "EOF"
     UNKNOWN = "UNKNOWN"
+    ERROR = "ERR"
 
 @dataclass
 class Token:
