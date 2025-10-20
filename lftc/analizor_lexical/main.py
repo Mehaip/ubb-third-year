@@ -25,11 +25,11 @@ if __name__ == "__main__":
 
         bst_sorted = bst.inorder([])
 
-        with open("data/ls.txt", "w") as f:
+        with open("data/ts.txt", "w") as f:
             for value in bst_sorted:
                 f.write(value)
                 f.write("\n")
-        print("Fisierul ls.txt completat!")
+        print("Fisierul ts.txt completat!")
         # Afișează tokenurile
 
         for token in tokens:
