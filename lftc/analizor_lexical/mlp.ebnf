@@ -1,0 +1,39 @@
+(* Specificatii EBNF pentru C++ MLP *)
+(* Structura programului *)
+program = {include_file}, [using_statement], {function_definition} ;
+using_statement = "using namespace std;" ;
+include_file = "#include", "<", identifier, ">" ;
+function_definition = type, identifier, "(", parameter_list, ")", statement_block ; 
+parameter_list = [ parameter, { ",",  parameter }] ;
+parameter = type , identifier ;
+(* Statement *)
+statement_block = "{", {statement}, "}" ;
+statement = variable_declaration | expression_statement | return_statement | if_statement | while_statement | read_statement | print_statement ;
+variable_declaration = type, identifier, [ "=", arithmetic_expression], {",", identifier, ["=", arithmetic_expression] }, ";" ;  (*int a=1+2,a=3+5*)
+expression_statement = [ expression ], ";" ; (*x=5*)
+return_statement = "return", [ expression ], ";" ; 
+if_statement = "if(" , boolean_expression, ")" , statement_block , ["else", statement_block] ;
+while_statement = "while(", boolean_expression, ")", statement_block;
+read_statement = "cin", ">>", identifier, ";";
+print_statement = "cout", "<<", identifier, ["<<","endl"], ";";
+(* Expressions *)
+expression = arithmetic_expression | boolean_expression ;
+arithmetic_expression = term, {operator, term} ;
+operator = "+" | "-" | "*" | "/"| "%" ;
+boolean_expression = term, {boolean_operator, term} ;
+term = identifier | literal ;
+boolean_operator = "!=" | "==" | "<" | ">" | "<=" | ">=" ; 
+(* Types *)
+type = "int" | "double" | "bool" ;
+(* Literals *)
+literal = integer_literal | boolean_literal | double_literal ;
+integer_literal = digit, {digit} ;
+boolean_literal = "true" | "false";
+double_literal = integer_literal, "." , integer_literal ;
+(* IDs *)
+identifier = letter, {letter | digit | "_"}
+letter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m"
+       | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+       | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M"
+       | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" ;
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
