@@ -12,7 +12,6 @@ if __name__ == "__main__":
             source_code = f.read()
         
         print(f"\n Citire fișier: {input_file}")
-        print(f"{'='*60}\n")
         print("Citit cu succes!\n")
         # Creează lexer-ul
         lexer = Lexer(source_code)
@@ -49,7 +48,8 @@ if __name__ == "__main__":
 
         print("Fisierul fip.csv completat!")
 
-
+        for _ in lexer.err:
+            print(_)
 
 
         

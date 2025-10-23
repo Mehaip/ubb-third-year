@@ -6,7 +6,7 @@ int main(){
     int a,b,23c;
     a = 5;
     b = 10.5.2;
-    c = 69.69;
+    c = 70.67;
     cout << a + b;
     
 }
