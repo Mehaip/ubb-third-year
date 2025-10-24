@@ -1,4 +1,4 @@
-package uni.ppd.lab1;
+package lab1;
 
 public class IntervalThread extends Thread {
     private int start;

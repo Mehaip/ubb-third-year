@@ -1,11 +1,9 @@
-package uni.ppd.lab1;
+package lab1;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.CyclicBarrier;
 import java.util.function.Supplier;
 
-import javax.management.RuntimeErrorException;
 
 public class Main {
 
@@ -49,7 +47,7 @@ public class Main {
         if (a.length <= 10){
             System.out.println(Arrays.toString(a));
             System.out.println(Arrays.toString(b));
-            System.out.println(Arrays.toString(c_seq));
+            System.out.println(Arrays.toString(c_cycl));
 
         }
 
