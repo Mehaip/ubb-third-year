@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.concurrent.CyclicBarrier;
 import java.util.function.Supplier;
 
+import javax.management.RuntimeErrorException;
+
 public class Main {
 
     private static int[] timeArraySum(
@@ -44,6 +46,29 @@ public class Main {
             }
         });
 
+        if (a.length <= 10){
+            System.out.println(Arrays.toString(a));
+            System.out.println(Arrays.toString(b));
+            System.out.println(Arrays.toString(c_seq));
+
+        }
+
+        c_int = timeArraySum("Interval", () -> {
+            try {
+                return sumArraysInterval(a, b, VEC_SIZE, NO_THREADS);
+            } catch (InterruptedException e){
+                throw new RuntimeException(e);
+            }
+        });
+
+        if (a.length <= 10) {
+            System.out.println(Arrays.toString(a));
+            System.out.println(Arrays.toString(b));
+            System.out.println(Arrays.toString(c_int));
+        }
+
+
+
 
     }
 
@@ -76,6 +101,30 @@ public class Main {
 
         for(int i = 0; i < noThreads; i++){
             threads[i] = new CyclicalThread(i, noThreads, size, A, B, C);
+            threads[i].start();
+        }
+
+        for (int i = 0; i < noThreads; i++){
+            threads[i].join();
+        }
+
+        return C;
+    }
+
+    private static int[] sumArraysInterval(
+        int[] A,
+        int[] B,
+        int size,
+        int noThreads
+    ) throws InterruptedException{
+        int[] C = new int[size];
+        IntervalThread[] threads = new IntervalThread[noThreads];
+        int chunkSize = size / noThreads;
+
+        for (int i = 0; i < noThreads; i++){
+            int start = i * chunkSize;
+            int end = (i == noThreads - 1) ? size : (i + 1) * chunkSize;
+            threads[i] = new IntervalThread(start, end, A, B, C);
             threads[i].start();
         }
 
