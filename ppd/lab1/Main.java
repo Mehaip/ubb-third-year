@@ -22,7 +22,7 @@ public class Main {
         System.out.println("PPD - Lab1");
         
         int VEC_SIZE = 10000000;
-        int NO_THREADS = 4;
+        int NO_THREADS = 50;
 
         int[] a = generateArray(VEC_SIZE,10);
         int[] b = generateArray(VEC_SIZE, 10);
