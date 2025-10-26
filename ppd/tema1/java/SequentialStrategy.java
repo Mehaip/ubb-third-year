@@ -1,5 +1,3 @@
-package tema1.java;
-
 public class SequentialStrategy implements ConvolutionStrategy {
 
 
