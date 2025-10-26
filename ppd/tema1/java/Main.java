@@ -30,15 +30,15 @@ public class Main {
             int[][] C = new int[k][k];
             FileManager fm = new FileManager();
 
-            // Generate and write input file
+            
             int[][] matFile = generateMatrix(N, M, 10);
             int[][] mat_convFile = generateMatrix(k, k, 10);
             fm.writeInputFile(matFile, N, M, mat_convFile, k);
 
-            // Read from file
+            
             fm.readFromFile(N, M, k, F, C);
 
-            // Sequential (no threads) - run 10 times and average
+            
             long sequentialTotal = 0;
             int[][] V = new int[N][M];
 
@@ -55,14 +55,14 @@ public class Main {
             System.out.println("Sequential (avg of " + NUM_RUNS + " runs): " +
                              String.format("%.2f", sequentialAvg) + " ms");
 
-            // Write output file once (for verification)
+            
             fm.writeOutputFile(V, N, M);
 
-            // Test with different thread counts
+            
             for (int p : threadCounts) {
                 System.out.println("\n  [p=" + p + " threads]");
 
-                // Horizontal strategy - run 10 times and average
+                
                 long horizontalTotal = 0;
                 for (int run = 0; run < NUM_RUNS; run++) {
                     V = new int[N][M];
@@ -78,7 +78,7 @@ public class Main {
                                  String.format("%.2f", horizontalAvg) + " ms (speedup: " +
                                  String.format("%.2f", horizontalSpeedup) + "x)");
 
-                // Vertical strategy - run 10 times and average
+                
                 long verticalTotal = 0;
                 for (int run = 0; run < NUM_RUNS; run++) {
                     V = new int[N][M];
