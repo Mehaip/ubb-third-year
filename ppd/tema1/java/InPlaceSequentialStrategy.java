@@ -10,17 +10,13 @@ public class InPlaceSequentialStrategy implements ConvolutionStrategy {
 
     @Override
     public void applyConvolution(int[][] F, int[][] V, int[][] C, int n, int m, int k) {
-        // Lab 2: In-place convolution with O(n) space complexity
-        // For k=3, we process row by row with a sliding window of row buffers
 
         int halfK = k / 2;
 
-        // We need k row buffers to hold original values while we process
         int[][] rowBuffers = new int[k][m];
 
-        // Initialize the buffers with the first k rows (with clamping for boundaries)
         for (int bufIdx = 0; bufIdx < k; bufIdx++) {
-            int rowIdx = bufIdx - halfK;  // For k=3, this is -1, 0, 1
+            int rowIdx = bufIdx - halfK;  // this is -1, 0, 1
             if (rowIdx < 0) rowIdx = 0;
             if (rowIdx >= n) rowIdx = n - 1;
 
@@ -58,7 +54,7 @@ public class InPlaceSequentialStrategy implements ConvolutionStrategy {
             }
 
             // Shift buffers: move everything up one position
-            // and load the next row into the last buffer position
+            // + load next row
             if (i < n - 1) {
                 // Rotate buffers
                 int[] temp = rowBuffers[0];

@@ -30,9 +30,9 @@ public class InPlaceHorizontalStrategy implements ConvolutionStrategy {
         public void run() {
             int halfK = k / 2;
 
-            // Each thread processes its assigned rows
+           
             for (int i = startRow; i < endRow; i++) {
-                // Read the rows we need (with boundary clamping)
+                
                 int[][] localBuffers = new int[k][m];
 
                 for (int ki = 0; ki < k; ki++) {
@@ -40,11 +40,9 @@ public class InPlaceHorizontalStrategy implements ConvolutionStrategy {
                     if (rowIdx < 0) rowIdx = 0;
                     if (rowIdx >= n) rowIdx = n - 1;
 
-                    // Check if we need to use shared buffer or can read directly
-                    // We need shared buffer only for rows that might be modified by other threads
+                    
                     if (rowIdx >= startRow && rowIdx < endRow) {
-                        // This row is in our range, but might be modified
-                        // Use shared buffer if it exists
+                       
                         synchronized (locks[rowIdx]) {
                             if (sharedRowBuffers[rowIdx] != null) {
                                 System.arraycopy(sharedRowBuffers[rowIdx], 0, localBuffers[ki], 0, m);
@@ -53,7 +51,7 @@ public class InPlaceHorizontalStrategy implements ConvolutionStrategy {
                             }
                         }
                     } else {
-                        // Row is outside our range, safe to read directly
+                        
                         synchronized (locks[rowIdx]) {
                             if (sharedRowBuffers[rowIdx] != null) {
                                 System.arraycopy(sharedRowBuffers[rowIdx], 0, localBuffers[ki], 0, m);

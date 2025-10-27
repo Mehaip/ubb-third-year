@@ -1,0 +1,99 @@
+PPD - Tema1 - Comprehensive Testing
+JAVA
+
+============================================================
+Testing with N=10, M=10, k=3
+============================================================
+Sequential (avg of 10 runs): 0.10 ms
+
+  [p=4 threads]
+    Horizontal (avg of 10 runs): 2.60 ms (speedup: 0.04x)
+    Vertical (avg of 10 runs): 2.00 ms (speedup: 0.05x)
+
+============================================================
+Testing with N=1000, M=1000, k=5
+============================================================
+Sequential (avg of 10 runs): 105.70 ms
+
+  [p=2 threads]
+    Horizontal (avg of 10 runs): 34.20 ms (speedup: 3.09x)
+    Vertical (avg of 10 runs): 35.80 ms (speedup: 2.95x)
+
+  [p=4 threads]
+    Horizontal (avg of 10 runs): 21.90 ms (speedup: 4.83x)
+    Vertical (avg of 10 runs): 24.50 ms (speedup: 4.31x)
+
+  [p=8 threads]
+    Horizontal (avg of 10 runs): 22.60 ms (speedup: 4.68x)
+    Vertical (avg of 10 runs): 24.50 ms (speedup: 4.31x)
+
+  [p=16 threads]
+    Horizontal (avg of 10 runs): 23.00 ms (speedup: 4.60x)
+    Vertical (avg of 10 runs): 25.40 ms (speedup: 4.16x)
+
+============================================================
+Testing with N=10, M=10000, k=5
+============================================================
+Sequential (avg of 10 runs): 4.30 ms
+
+  [p=2 threads]
+    Horizontal (avg of 10 runs): 3.70 ms (speedup: 1.16x)
+    Vertical (avg of 10 runs): 4.10 ms (speedup: 1.05x)
+
+  [p=4 threads]
+    Horizontal (avg of 10 runs): 3.60 ms (speedup: 1.19x)
+    Vertical (avg of 10 runs): 3.60 ms (speedup: 1.19x)
+
+  [p=8 threads]
+    Horizontal (avg of 10 runs): 4.40 ms (speedup: 0.98x)
+    Vertical (avg of 10 runs): 4.10 ms (speedup: 1.05x)
+
+  [p=16 threads]
+    Horizontal (avg of 10 runs): 5.00 ms (speedup: 0.86x)
+    Vertical (avg of 10 runs): 4.80 ms (speedup: 0.90x)
+
+============================================================
+Testing with N=10000, M=10, k=5
+============================================================
+Sequential (avg of 10 runs): 4.20 ms
+
+  [p=2 threads]
+    Horizontal (avg of 10 runs): 3.40 ms (speedup: 1.24x)
+    Vertical (avg of 10 runs): 4.00 ms (speedup: 1.05x)
+
+  [p=4 threads]
+    Horizontal (avg of 10 runs): 3.50 ms (speedup: 1.20x)
+    Vertical (avg of 10 runs): 4.10 ms (speedup: 1.02x)
+
+  [p=8 threads]
+    Horizontal (avg of 10 runs): 4.10 ms (speedup: 1.02x)
+    Vertical (avg of 10 runs): 4.90 ms (speedup: 0.86x)
+
+  [p=16 threads]
+    Horizontal (avg of 10 runs): 4.80 ms (speedup: 0.88x)
+    Vertical (avg of 10 runs): 5.20 ms (speedup: 0.81x)
+
+============================================================
+Testing with N=10000, M=10000, k=5
+============================================================
+Sequential (avg of 10 runs): 4470.50 ms
+
+  [p=2 threads]
+    Horizontal (avg of 10 runs): 2097.90 ms (speedup: 2.13x)
+    Vertical (avg of 10 runs): 2196.00 ms (speedup: 2.04x)
+
+  [p=4 threads]
+    Horizontal (avg of 10 runs): 2091.70 ms (speedup: 2.14x)
+    Vertical (avg of 10 runs): 2204.80 ms (speedup: 2.03x)
+
+  [p=8 threads]
+    Horizontal (avg of 10 runs): 2075.70 ms (speedup: 2.15x)
+    Vertical (avg of 10 runs): 2198.50 ms (speedup: 2.03x)
+
+  [p=16 threads]
+    Horizontal (avg of 10 runs): 2347.30 ms (speedup: 1.90x)
+    Vertical (avg of 10 runs): 2249.30 ms (speedup: 1.99x)
+
+============================================================
+All tests completed!
+============================================================

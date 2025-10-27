@@ -168,42 +168,6 @@ static void workerBlock(int startRow, int endRow, int startCol, int endCol) {
     }
 }
 
-void applyConvolutionParallelBlock(int n, int m, int k, int numThreads) {
-    global_n = n; global_m = m; global_k = k;
-    std::vector<std::thread> threads;
-
-    int gridRows = (int)std::sqrt(numThreads);
-    int gridCols = numThreads / gridRows;
-
-    while (gridRows * gridCols < numThreads) gridCols++;
-
-    int rowsPerBlock = n / gridRows;
-    int colsPerBlock = m / gridCols;
-    int extraRows = n % gridRows;
-    int extraCols = m % gridCols;
-
-    int startRow = 0;
-    for (int gr = 0; gr < gridRows; gr++) {
-        int endRow = startRow + rowsPerBlock + (gr < extraRows ? 1 : 0);
-
-        int startCol = 0;
-        for (int gc = 0; gc < gridCols; gc++) {
-            int endCol = startCol + colsPerBlock + (gc < extraCols ? 1 : 0);
-
-            if (threads.size() < (size_t)numThreads) {
-                threads.emplace_back(workerBlock, startRow, endRow, startCol, endCol);
-            }
-
-            startCol = endCol;
-        }
-
-        startRow = endRow;
-    }
-
-    for (auto& th : threads) {
-        th.join();
-    }
-}
 
 }
 

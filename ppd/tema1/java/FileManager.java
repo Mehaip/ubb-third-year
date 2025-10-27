@@ -8,12 +8,10 @@ import java.util.Scanner;
 public class FileManager {
     File inputFile = new File("tema1/data/date.txt");
     File outputFile = new File("tema1/data/output.txt");
+
     
     FileManager() throws IOException {
-        // Always recreate the output file
-        Files.newOutputStream(outputFile.toPath(),
-            StandardOpenOption.CREATE,
-            StandardOpenOption.TRUNCATE_EXISTING).close();
+
 
     }
 
@@ -47,8 +45,8 @@ public class FileManager {
 
     }
 
-    void writeOutputFile(int mat[][], int n, int m) throws IOException{
-        FileWriter writer = new FileWriter(outputFile);
+    void writeOutputFile(int mat[][], int n, int m, String outputFilePath) throws IOException{
+        FileWriter writer = new FileWriter(outputFilePath);
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
                 writer.write(Integer.toString(mat[i][j]));

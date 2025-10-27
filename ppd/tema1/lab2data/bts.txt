@@ -1,0 +1,70 @@
+Input matrix F (4x4):
+       j=0  j=1  j=2  j=3
+  i=0 [ 10,  20,  30,  40]
+  i=1 [ 50,  60,  70,  80]
+  i=2 [ 90, 100, 110, 120]
+  i=3 [130, 140, 150, 160]
+
+  Convolution kernel C (3x3):
+  [0, 1, 0]
+  [0, 0, 0]
+  [0, 0, 0]
+
+
+1. Load the first 3 rows needed to compute row i = 0
+
+rowBuffers[0] = [10, 20, 30, 40]  ← F[0] (clamped from row -1)
+rowBuffers[1] = [10, 20, 30, 40]  ← F[0] (actual row 0)
+rowBuffers[2] = [50, 60, 70, 80]  ← F[1] (row below)
+
+Visual concept:
+          bufIdx:
+              0  ← points to F[0] (clamped boundary)
+              1  ← points to F[0] (center row we're computing)
+              2  ← points to F[1] (bottom neighbor)
+
+IT1: Processing row i=0
+
+ Step 1: Compute convolution using current buffers
+
+  For position (0, 0):
+  Need to read 3x3 neighborhood around (0,0):
+    Row i-1 (buffer[0]): elements j=-1,0,1 → clamped to [10,10,20]
+    Row i   (buffer[1]): elements j=-1,0,1 → clamped to [10,10,20]
+    Row i+1 (buffer[2]): elements j=-1,0,1 → clamped to [50,50,60]
+
+  Convolution:
+    10*0 + 10*1 + 20*0 +   ← buffer[0] (top row)
+    10*0 + 10*0 + 20*0 +   ← buffer[1] (middle row)  = 10
+    50*0 + 50*0 + 60*0     ← buffer[2] (bottom row)
+
+  For position (0, 1):
+    buffer[0]: [10, 20, 30] → 10*0 + 20*1 + 30*0 = 20
+    buffer[1]: [10, 20, 30] → 10*0 + 20*0 + 30*0 = 0
+    buffer[2]: [50, 60, 70] → 50*0 + 60*0 + 70*0 = 0
+    Result: 20
+
+  resultRow = [10, 20, 30, 40]
+
+Step 3: Rotate buffers (prepare for next row)
+  // Lines 64-68
+  int[] temp = rowBuffers[0];              // Save oldest
+  for (int bufIdx = 0; bufIdx < 2; bufIdx++) {
+      rowBuffers[bufIdx] = rowBuffers[bufIdx + 1];  // Shift
+  }
+  rowBuffers[2] = temp;  // Reuse
+
+  After rotation:
+  rowBuffers[0] = [10, 20, 30, 40]  ← was buffer[1]
+  rowBuffers[1] = [50, 60, 70, 80]  ← was buffer[2]
+  rowBuffers[2] = temp              ← will be reused
+
+  Step 4: Load next row
+  // Lines 71-76
+  int nextRowIdx = i + halfK + 1;  // 0 + 1 + 1 = 2
+  rowBuffers[2] = F[nextRowIdx];   // Load F[2]
+
+  Final buffer state:
+  rowBuffers[0] = [10, 20, 30, 40]  ← F[0] (now modified)
+  rowBuffers[1] = [50, 60, 70, 80]  ← F[1] (still original!)
+  rowBuffers[2] = [90,100,110,120]  ← F[2] (still original!)

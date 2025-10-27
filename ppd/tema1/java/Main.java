@@ -57,7 +57,7 @@ public class Main {
                              String.format("%.2f", sequentialAvg) + " ms");
 
             // Write output file (using the last sequential run result)
-            fm.writeOutputFile(F, N, M);
+            fm.writeOutputFile(F, N, M, "");
 
             // Test with different thread counts (horizontal only for Lab 2)
             for (int p : threadCounts) {
@@ -88,22 +88,23 @@ public class Main {
         }
     }
 
-    public static void runTestLab1(int N, int M, int k, int[] threadCounts) {
+    public static void runTestLab1(int N, int M, int k, int[] threadCounts, String pathOutput) {
         System.out.println("\n" + "=".repeat(60));
         System.out.println("Testing with N=" + N + ", M=" + M + ", k=" + k);
         System.out.println("=".repeat(60));
 
-        final int NUM_RUNS = 10;
+        final int NUM_RUNS = 1;
 
         try {
+            System.out.println("only one run");
             int[][] F = new int[N][M];
             int[][] C = new int[k][k];
             FileManager fm = new FileManager();
 
             
-            int[][] matFile = generateMatrix(N, M, 10);
-            int[][] mat_convFile = generateMatrix(k, k, 10);
-            fm.writeInputFile(matFile, N, M, mat_convFile, k);
+            //int[][] matFile = generateMatrix(N, M, 10);
+            //int[][] mat_convFile = generateMatrix(k, k, 10);
+            //fm.writeInputFile(matFile, N, M, mat_convFile, k);
 
             
             fm.readFromFile(N, M, k, F, C);
@@ -125,8 +126,8 @@ public class Main {
             System.out.println("Sequential (avg of " + NUM_RUNS + " runs): " +
                              String.format("%.2f", sequentialAvg) + " ms");
 
-            
-            fm.writeOutputFile(V, N, M);
+ 
+            fm.writeOutputFile(V, N, M, pathOutput);
 
             
             for (int p : threadCounts) {
@@ -188,19 +189,19 @@ public class Main {
             System.out.println("\n*** Running Laborator 1 Tests ***\n");
 
             // Test 1: N=M=10, k=3, p=4
-            runTestLab1(10, 10, 3, new int[]{4});
+            //runTestLab1(10, 10, 3, new int[]{4}, "/home/mijaj/CodingTomfoolery/uni/ppd/tema1/data/output.txt");
 
             // Test 2: N=M=1000, k=5, p=2,4,8,16
-            runTestLab1(1000, 1000, 5, new int[]{2, 4, 8, 16});
+            //runTestLab1(1000, 1000, 5, new int[]{2, 4, 8, 16},"/home/mijaj/CodingTomfoolery/uni/ppd/tema1/data/output2.txt");
 
             // Test 3: N=10, M=10000, k=5, p=2,4,8,16
-            runTestLab1(10, 10000, 5, new int[]{2, 4, 8, 16});
+            //runTestLab1(10, 10000, 5, new int[]{2, 4, 8, 16}, "/home/mijaj/CodingTomfoolery/uni/ppd/tema1/data/output3.txt");
 
             // Test 4: N=10000, M=10, k=5, p=2,4,8,16
-            runTestLab1(10000, 10, 5, new int[]{2, 4, 8, 16});
+            //runTestLab1(10000, 10, 5, new int[]{2, 4, 8, 16},"/home/mijaj/CodingTomfoolery/uni/ppd/tema1/data/output4.txt");
 
             // Test 5: N=10000, M=10000, k=5, p=2,4,8,16
-            runTestLab1(10000, 10000, 5, new int[]{2, 4, 8, 16});
+            runTestLab1(10000, 10000, 5, new int[]{2, 4, 8, 16},"/home/mijaj/CodingTomfoolery/uni/ppd/tema1/data/outputjava.txt");
 
         } else if (choice == 2) {
             System.out.println("\n*** Running Laborator 2 Tests ***\n");
