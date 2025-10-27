@@ -1,9 +1,0 @@
-node_modules/
-dist/
-build/
-.vite/
-.DS_Store
-*.log
-.env
-.env.local
-.ionic/
