@@ -1,2 +1,3 @@
-lftc - compilatoare
-ppd - programare paralela si distribuita
+-- lftc - compilatoare
+-- ppd - programare paralela si distribuita
+
