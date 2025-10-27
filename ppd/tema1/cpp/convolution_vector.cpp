@@ -209,4 +209,125 @@ void applyConvolutionParallelBlock(ConvolutionData& data, int numThreads) {
     }
 }
 
+// Lab 2: In-place convolution (sequential)
+void applyConvolutionInPlace(ConvolutionData& data) {
+    int halfK = data.k / 2;
+
+    // Create k row buffers for sliding window
+    std::vector<std::vector<int>> rowBuffers(data.k, std::vector<int>(data.m));
+
+    // Initialize buffers with first k rows (with clamping)
+    for (int bufIdx = 0; bufIdx < data.k; bufIdx++) {
+        int rowIdx = bufIdx - halfK;  // For k=3, this is -1, 0, 1
+        if (rowIdx < 0) rowIdx = 0;
+        if (rowIdx >= data.n) rowIdx = data.n - 1;
+
+        rowBuffers[bufIdx] = data.F[rowIdx];
+    }
+
+    // Process each row
+    for (int i = 0; i < data.n; i++) {
+        std::vector<int> resultRow(data.m);
+
+        // Calculate convolution for this row
+        for (int j = 0; j < data.m; j++) {
+            int sum = 0;
+
+            for (int ki = 0; ki < data.k; ki++) {
+                for (int kj = 0; kj < data.k; kj++) {
+                    int fj = j + kj - halfK;
+
+                    // Clamp column index
+                    if (fj < 0) fj = 0;
+                    if (fj >= data.m) fj = data.m - 1;
+
+                    sum += rowBuffers[ki][fj] * data.C[ki][kj];
+                }
+            }
+
+            resultRow[j] = sum;
+        }
+
+        // Write result back to F[i]
+        data.F[i] = resultRow;
+
+        // Shift buffers and load next row
+        if (i < data.n - 1) {
+            // Rotate buffers (move everything up one position)
+            std::vector<int> temp = rowBuffers[0];
+            for (int bufIdx = 0; bufIdx < data.k - 1; bufIdx++) {
+                rowBuffers[bufIdx] = rowBuffers[bufIdx + 1];
+            }
+            rowBuffers[data.k - 1] = temp;
+
+            // Load next row
+            int nextRowIdx = i + halfK + 1;
+            if (nextRowIdx >= data.n) nextRowIdx = data.n - 1;
+
+            rowBuffers[data.k - 1] = data.F[nextRowIdx];
+        }
+    }
+
+    // Copy F to V for consistency with interface
+    data.V = data.F;
+}
+
+// Lab 2: In-place convolution (parallel horizontal)
+static void workerRowsInPlace(ConvolutionData& data, int startRow, int endRow,
+                              const std::vector<std::vector<int>>& originalF) {
+    int halfK = data.k / 2;
+
+    for (int i = startRow; i < endRow; i++) {
+        std::vector<int> resultRow(data.m);
+
+        for (int j = 0; j < data.m; j++) {
+            int sum = 0;
+
+            for (int ki = 0; ki < data.k; ki++) {
+                for (int kj = 0; kj < data.k; kj++) {
+                    int fi = i + ki - halfK;
+                    int fj = j + kj - halfK;
+
+                    // Clamp indices
+                    if (fi < 0) fi = 0;
+                    if (fi >= data.n) fi = data.n - 1;
+                    if (fj < 0) fj = 0;
+                    if (fj >= data.m) fj = data.m - 1;
+
+                    sum += originalF[fi][fj] * data.C[ki][kj];
+                }
+            }
+
+            resultRow[j] = sum;
+        }
+
+        // Write result back to F[i]
+        data.F[i] = resultRow;
+    }
+}
+
+void applyConvolutionInPlaceParallelHorizontal(ConvolutionData& data, int numThreads) {
+    // Save original F before any modifications
+    std::vector<std::vector<int>> originalF = data.F;
+
+    std::vector<std::thread> threads;
+
+    int rowsPerThread = data.n / numThreads;
+    int extraRows = data.n % numThreads;
+
+    int startRow = 0;
+    for (int t = 0; t < numThreads; t++) {
+        int endRow = startRow + rowsPerThread + (t < extraRows ? 1 : 0);
+        threads.emplace_back(workerRowsInPlace, std::ref(data), startRow, endRow, std::cref(originalF));
+        startRow = endRow;
+    }
+
+    for (auto& th : threads) {
+        th.join();
+    }
+
+    // Copy F to V for consistency with interface
+    data.V = data.F;
+}
+
 } // namespace VectorImpl

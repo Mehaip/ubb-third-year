@@ -51,6 +51,10 @@ namespace VectorImpl {
     void applyConvolutionParallelHorizontal(ConvolutionData& data, int numThreads);
     void applyConvolutionParallelVertical(ConvolutionData& data, int numThreads);
     void applyConvolutionParallelBlock(ConvolutionData& data, int numThreads);
+
+    // Lab 2: In-place convolution functions
+    void applyConvolutionInPlace(ConvolutionData& data);
+    void applyConvolutionInPlaceParallelHorizontal(ConvolutionData& data, int numThreads);
 }
 
 #endif // CONVOLUTION_H
