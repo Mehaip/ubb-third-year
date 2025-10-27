@@ -1,0 +1,15 @@
+stari : a, b, c
+
+alfabet : 1
+
+tranzitii :
+
+a, 1 -> b
+a, 1 -> c
+
+sfarsit tranzitii
+
+stare_initiala : a
+
+stari_finale : b, c
+
