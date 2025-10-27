@@ -1,6 +1,6 @@
-stari : bin_digit, bin_prefix, decimal, hex_digit, hex_prefix, octal start, zero,
-alfabet : 0-9, A-F, X, a-f, b b, x,
-tranzitii
+Q : bin_digit bin_prefix decimal hex_digit hex_prefix octal start zero
+Σ : 0 1 2 3 4 5 6 7 8 9 A B C D E F X a b c d e f x
+δ
 bin_digit, 0 -> bin_digit
 bin_digit, 1 -> bin_digit
 bin_prefix, 0 -> bin_digit
@@ -89,6 +89,6 @@ zero, B -> bin_prefix
 zero, X -> hex_prefix
 zero, b -> bin_prefix
 zero, x -> hex_prefix
-sfarsit tranzitii
-stare_initiala : start
-stari_finale : bin_digit, decimal, hex_digit, octal zero,
+sfarsit δ
+q₀ : start
+F : bin_digit decimal hex_digit octal zero

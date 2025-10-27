@@ -22,32 +22,31 @@ class AutomatFinit:
         return self.stari_finale
 
     def write_to_file(self, filename):
-        """Write all automaton data to a file"""
+        """Write all automaton data to a file using proper mathematical symbols"""
         try:
             with open(filename, 'w') as f:
-                # Write states
+                
                 if self.stari:
-                    f.write("stari : " + " ".join(sorted(self.stari)) + "\n")
+                    f.write("Q : " + " ".join(sorted(self.stari)) + "\n")
 
-                # Write alphabet
+                
                 if self.alfabet:
-                    f.write("alfabet : " + " ".join(sorted(self.alfabet)) + "\n")
+                    f.write("Σ : " + " ".join(sorted(self.alfabet)) + "\n")
 
-                # Write transitions
+                
                 if self.tranzitii:
-                    f.write("tranzitii\n")
+                    f.write("δ\n")
                     for (from_state, symbol), to_states in sorted(self.tranzitii.items()):
                         for to_state in sorted(to_states):
                             f.write(f"{from_state}, {symbol} -> {to_state}\n")
-                    f.write("sfarsit tranzitii\n")
+                    f.write("sfarsit δ\n")
 
-                # Write initial state
                 if self.stare_initiala:
-                    f.write(f"stare_initiala : {self.stare_initiala}\n")
+                    f.write(f"q₀ : {self.stare_initiala}\n")
 
-                # Write final states
+               
                 if self.stari_finale:
-                    f.write("stari_finale : " + " ".join(sorted(self.stari_finale)) + "\n")
+                    f.write("F : " + " ".join(sorted(self.stari_finale)) + "\n")
 
                 print(f"Date scrise in {filename} cu succes!")
         except Exception as e:
@@ -112,7 +111,7 @@ class AutomatFinit:
     
     def parser_stari(self, stari:list[str],stariFinale:bool):
         for stare in stari:
-            stare.replace(',',"")
+            stare = stare.replace(',',"")
             if stariFinale:
                 self.stari_finale.add(stare)
             else:
@@ -120,9 +119,9 @@ class AutomatFinit:
 
     def parser_alfabet(self, alfabet:list[str]):
         for element in alfabet:
-            element.replace(',',"")
+            element = element.replace(',',"")
             if "-" in element:
-                self.alfabet.add(self.expand_range(element))
+                self.alfabet.update(self.expand_range(element))
             else:
                 self.alfabet.add(element)
 
@@ -146,6 +145,37 @@ class AutomatFinit:
                 if key not in self.tranzitii:
                     self.tranzitii[key] = set() #adaugam cheia in tranzitii
                 self.tranzitii[key].add(next_stare)
+
+    def accepts(self, sequence):
+        stare_curenta = self.stare_initiala
+
+        for simbol in sequence:
+            key = (stare_curenta, simbol)
+            
+            if key not in self.tranzitii:
+                return False # nu exista tranzitie => reject
+
+            stari_urmatoare = self.tranzitii[key]
+            stare_curenta = next(iter(stari_urmatoare))
+            print(f"{stare_curenta}, {simbol} -> {stare_curenta}")
+        
+        return stare_curenta in self.stari_finale #verificam daca e stare finala
+    
+    def longest_accepted_prefix(self, sequence):
+        stare_curenta = self.stare_initiala
+        prefix = ""
+
+        for i, simbol in enumerate(sequence):
+            key = (stare_curenta,simbol)
+            if key not in self.tranzitii:
+                break
+            stari_urmatoare = self.tranzitii[key] #se acceseaza urmatoarele stari pentru key-ul (stare_curenta, simbol)
+            stare_curenta = next(iter(stari_urmatoare)) #primul element din set, e okay pt ca e dfa si stim clar pathul
+            if stare_curenta in self.stari_finale:
+                prefix = sequence[:i + 1]
+            print(f"{stare_curenta}, {simbol} -> {stare_curenta}")
+
+        return prefix
 
 
             

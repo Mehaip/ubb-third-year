@@ -1,6 +1,6 @@
 stari : start, decimal, zero, hex_prefix, hex_digit, bin_prefix, bin_digit, octal
 
-alfabet : a-f, A-F, 0-9, x, X, b, b
+alfabet : a-f, A-F, 0-9, x, X, b, B
 
 tranzitii : 
 
