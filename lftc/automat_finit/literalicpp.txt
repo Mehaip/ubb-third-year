@@ -1,0 +1,37 @@
+stari : start, decimal, zero, hex_prefix, hex_digit, bin_prefix, bin_digit, octal
+
+alfabet : a-f, A-F, 0-9, x, X, b, b
+
+tranzitii : 
+
+start, 1-9 -> decimal
+decimal, 0-9 -> decimal
+
+start, 0 -> zero
+
+zero, x -> hex_prefix
+zero, X -> hex_prefix
+hex_prefix, 0-9 -> hex_digit
+hex_prefix, a-f -> hex_digit
+hex_prefix, A-F -> hex_digit
+hex_digit, 0-9 -> hex_digit
+hex_digit, a-f -> hex_digit
+hex_digit, A-F -> hex_digit
+
+zero, b -> bin_prefix
+zero, B -> bin_prefix
+bin_prefix, 0 -> bin_digit
+bin_prefix, 1 -> bin_digit
+bin_digit, 0 -> bin_digit
+bin_digit, 1 -> bin_digit
+
+zero, 0-7 -> octal
+octal, 0-7 -> octal
+
+sfarsit tranzitii
+
+
+stare_initiala : start
+
+stari_finale : decimal, zero, hex_digit, bin_digit, octal
+

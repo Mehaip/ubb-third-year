@@ -1,0 +1,33 @@
+AF_file = stari, alfabet, tranzitii, stare_initiala, stari_finale
+
+stari = "stari" ":" lista_stari;
+lista_stari = stare {"," stare};
+stare = identifier;
+
+alfabet = "alfabet" ":" lista_alfabet;
+lista_alfabet = simbol {"," simbol};
+simbol = character | range;
+range = character "-" character; (* a-z, A-Z, 0-9*)
+
+tranzitii = "tranzitii" ":" lista_tranzitii "sfarsit tranzitii";
+lista_tranzitii = tranzitie {";" tranzitie};
+tranzitie = stare "," simbol "->" stare
+
+stare_initiala = "stare initiala" ":" stare
+
+stari_finale = "stari finale" ":" lista_stari
+
+identifier = letter {letter | digit}
+
+character = letter | digits
+
+letter = "A" | "B" | "C" | "D" | "E" | "F" | "G"
+       | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+       | "O" | "P" | "Q" | "R" | "S" | "T" | "U"
+       | "V" | "W" | "X" | "Y" | "Z" | "a" | "b"
+       | "c" | "d" | "e" | "f" | "g" | "h" | "i"
+       | "j" | "k" | "l" | "m" | "n" | "o" | "p"
+       | "q" | "r" | "s" | "t" | "u" | "v" | "w"
+       | "x" | "y" | "z" ;
+
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
