@@ -35,3 +35,4 @@ stare_initiala : start
 
 stari_finale : decimal, zero, hex_digit, bin_digit, octal
 
+

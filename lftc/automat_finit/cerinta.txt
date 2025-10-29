@@ -1,0 +1,8 @@
+Pentru urmatorul limbaj, scrieti AF care il accepta. 
+Verificati functionarea programului pentru acesta. 
+
+ {b^m | m - numar natural}  U {a^(2n) b | n - numar natural} 
+ ACCEPTATE:
+ bbbbb
+ aab
+ aaaab

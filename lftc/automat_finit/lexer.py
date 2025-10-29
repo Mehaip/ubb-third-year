@@ -21,6 +21,48 @@ class AutomatFinit:
     def get_stari_finale(self):
         return self.stari_finale
 
+    def read_from_keyboard(self):
+        """Read automaton from keyboard input"""
+        print("\n=== Enter Finite Automaton ===")
+        print("Adauga fiecare sectiune (scrie STOP cand termini)\n")
+        
+        # Read states
+        print("Stari (comma-separated, e.g., q0,q1,q2):")
+        states_input = input().strip()
+        for state in states_input.split(','):
+            self.stari.add(state.strip())
+        
+        # Read alphabet
+        print("Alfabet (comma-separated, supports ranges like 0-9, a-f):")
+        alphabet_input = input().strip()
+        for item in alphabet_input.split(','):
+            self.alfabet.update(self.expand_range(item.strip()))
+        
+        # Read transitions
+        print("\nTranzitii:")
+        print("Una pe linie: stare_curenta, simbol->starea_urmatoare")
+        lines = []
+        while True:
+            line = input().strip()
+            if line == "STOP":
+                break
+            lines.append(line)
+
+
+        self.parse_transitions(lines)
+        
+        # Read initial state
+        print("\nStare initiala:")
+        self.stare_initiala = input().strip()
+
+        print("\nStari finale: (STOP ca sa te opresti)")
+        while True:
+            stare_finala = input()
+            if stare_finala == "STOP":
+                break
+            self.stari_finale.add(stare_finala)
+
+    
     def write_to_file(self, filename):
         """Write all automaton data to a file using proper mathematical symbols"""
         try:
@@ -170,12 +212,20 @@ class AutomatFinit:
             if key not in self.tranzitii:
                 break
             stari_urmatoare = self.tranzitii[key] #se acceseaza urmatoarele stari pentru key-ul (stare_curenta, simbol)
-            stare_curenta = next(iter(stari_urmatoare)) #primul element din set, e okay pt ca e dfa si stim clar pathul
+            stare_curenta = next(iter(stari_urmatoare)) #primul element din set
             if stare_curenta in self.stari_finale:
                 prefix = sequence[:i + 1]
             print(f"{stare_curenta}, {simbol} -> {stare_curenta}")
 
         return prefix
+    
+    def is_deterministic(self):
+        for (state, symbol), next_states in self.tranzitii.items():
+            if len(next_states) > 1:
+                return False
+        return True
+
+        
 
 
             
