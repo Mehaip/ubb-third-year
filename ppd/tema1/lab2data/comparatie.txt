@@ -1,9 +1,0 @@
-N=1000, M=1000, K=3
-
-CPP are performanta mult mai buna decat java (comparativ cu sequential)
-cpp: 2.18x vs java: 1.74x
-Insa, la CPP dureaza mult mai mult rularea codului
-
-N=10000, M=10000, K=3
-
-CPP se misca foarte greu
