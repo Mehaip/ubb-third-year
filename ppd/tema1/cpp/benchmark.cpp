@@ -9,53 +9,16 @@
 using namespace std;
 using namespace std::chrono;
 
-void generateTestData(const string& filename, int n, int m, int k) {
-    ofstream out(filename);
-    if (!out.is_open()) {
-        cerr << "Failed to create test data file: " << filename << "\n";
-        return;
-    }
 
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_int_distribution<> dis(0, 10);
-
-    // Write dimensions
-    out << n << " " << m << " " << k << "\n";
-
-    // Write matrix F (n x m)
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            out << dis(gen);
-            if (j < m - 1) out << " ";
-        }
-        out << "\n";
-    }
-
-    // Write kernel C (k x k)
-    for (int i = 0; i < k; i++) {
-        for (int j = 0; j < k; j++) {
-            out << dis(gen);
-            if (j < k - 1) out << " ";
-        }
-        out << "\n";
-    }
-
-    out.close();
-}
-
-void runTestLab2(int N, int M, int k, int threadCounts[], int numThreadCounts) {
+void runTestLab2(int N, int M, int k, int threadCounts[], int numThreadCounts, const string& inputFile, const string& outputFile) {
     cout << "\n" << string(60, '=') << "\n";
     cout << "Testing with N=" << N << ", M=" << M << ", k=" << k << "\n";
     cout << string(60, '=') << "\n";
 
-    const int NUM_RUNS = 10;
-    string inputFile = "../data/date.txt";
-    string outputFile = "../data/outputcpp.txt";
+    const int NUM_RUNS = 1;
 
     try {
-        // Generate and write input file
-        generateTestData(inputFile, N, M, k);
+       
 
         // Sequential in-place - run 10 times and average
         long long sequentialTotal = 0;
@@ -243,16 +206,23 @@ void runTestLab1(int N, int M, int k, int threadCounts[], int numThreadCounts) {
 
 int main() {
     cout << string(60, '=') << "\n";
-    cout << "PPD - Matrix Convolution Benchmark\n";
+    cout << "PPD - Matrix Convolution Benchmark - Lab 2\n";
     cout << string(60, '=') << "\n";
-    cout << "Running 10000x10000 matrix test...\n";
 
-    // Test: N=M=10000, k=5, p=2,4,8,16
-    int threads[] = {2, 4, 8, 16};
-    runTestLab1(10000, 10000, 5, threads, 4);
+    // Test 1: N=M=10, k=3, p=2
+    int threads1[] = {2};
+    runTestLab2(10, 10, 3, threads1, 1, "data/matrice10.txt", "results/cpp/output10.txt");
+
+    // Test 2: N=M=1000, k=3, p=2,4,8,16
+    int threads2[] = {2, 4, 8, 16};
+    runTestLab2(1000, 1000, 3, threads2, 4, "data/matrice1000.txt", "results/cpp/output1000.txt");
+
+    // Test 3: N=M=10000, k=3, p=2,4,8,16
+    int threads3[] = {2, 4, 8, 16};
+    runTestLab2(10000, 10000, 3, threads3, 4, "data/matrice10000.txt", "results/cpp/output10000.txt");
 
     cout << "\n" << string(60, '=') << "\n";
-    cout << "Test completed! Results written to ../data/outputcpp.txt\n";
+    cout << "All tests completed!\n";
     cout << string(60, '=') << "\n";
 
     return 0;

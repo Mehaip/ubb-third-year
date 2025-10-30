@@ -6,47 +6,19 @@ import java.io.FileWriter;
 import java.util.Scanner;
 
 public class FileManager {
-    File inputFile = new File("tema1/data/date.txt");
-    File outputFile = new File("tema1/data/output.txt");
-
+    String inputFile;
+    String outputFile;
     
-    FileManager() throws IOException {
-
-
-    }
-
-
-
-    void writeInputFile(int mat[][], int n, int m, int mat_conv[][], int k)
-        throws IOException{
-
-        FileWriter writer = new FileWriter(inputFile);
-        writer.write(Integer.toString(n)+" "+Integer.toString(m)+" "+Integer.toString(k)+"\n");
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++){
-                writer.write(Integer.toString(mat[i][j]));
-                writer.write(" ");
-            }
-            writer.write("\n");
-
-        }
-        for(int i = 0; i < k; i++){
-            for(int j = 0; j < k; j++){
-                writer.write(Integer.toString(mat_conv[i][j]));
-                writer.write(" ");
-            }
-            writer.write("\n");
-
-        }
-
-
-
-        writer.close();
+    FileManager(String inputFile, String outputFile) throws IOException {
+        this.inputFile = inputFile;
+        this.outputFile = outputFile;
 
     }
 
-    void writeOutputFile(int mat[][], int n, int m, String outputFilePath) throws IOException{
-        FileWriter writer = new FileWriter(outputFilePath);
+
+    void writeOutputFile(int mat[][], int n, int m) throws IOException{
+        FileWriter writer = new FileWriter(outputFile);
+        writer.write(n + " " + m + "\n");
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
                 writer.write(Integer.toString(mat[i][j]));
@@ -58,9 +30,9 @@ public class FileManager {
         writer.close();
     }
 
-    void readFromFile(int n, int m, int k, int F[][], int C[][]){
+    void readFromFile(int n, int m, int k, int F[][], int C[][]) throws IOException{
                 try {
-            Scanner scanner = new Scanner(inputFile);
+            Scanner scanner = new Scanner(new File(inputFile));
             
  
             n = scanner.nextInt();

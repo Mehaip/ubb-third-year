@@ -1,0 +1,3 @@
+diff -w results/cpp/output10.txt results/java/output10.txt && echo "output10.txt - IDENTICAL" || echo "output10.txt - DIFFERENT"
+diff -w results/cpp/output1000.txt results/java/output1000.txt && echo "output1000.txt - IDENTICAL" || echo "output1000.txt - DIFFERENT"
+diff -w results/cpp/output10000.txt results/java/output10000.txt && echo "output10000.txt - IDENTICAL" || echo "output10000.txt - DIFFERENT"
