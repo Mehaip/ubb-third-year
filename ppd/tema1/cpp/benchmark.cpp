@@ -50,7 +50,7 @@ void runTestLab2(int N, int M, int k, int threadCounts[], int numThreadCounts, c
             for (int run = 0; run < NUM_RUNS; run++) {
                 VectorImpl::ConvolutionData data = VectorImpl::readInput(inputFile);
                 auto start = high_resolution_clock::now();
-                VectorImpl::applyConvolutionInPlaceParallelHorizontal(data, p);
+                VectorImpl::applyConvolutionInPlaceParallel(data, p);
                 auto end = high_resolution_clock::now();
                 horizontalTotal += duration_cast<milliseconds>(end - start).count();
             }

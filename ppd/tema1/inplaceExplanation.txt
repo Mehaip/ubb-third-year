@@ -1,0 +1,53 @@
+Clamping process:
+10 10 3
+7 5 8 5 8 6 8 9 5 0
+8 6 7 9 7 2 0 3 8 2
+0 7 4 8 3 0 0 7 9 1
+0 8 6 9 1 5 2 1 1 7
+4 9 8 7 4 5 8 5 2 5
+9 2 6 8 0 3 3 8 1 3
+2 0 3 0 7 7 6 1 0 1
+3 5 4 9 1 5 9 8 4 0
+7 5 3 4 3 5 5 0 0 3
+5 3 4 6 0 7 3 4 3 9
+8 1 5
+6 3 5
+4 2 7
+
+Pentru pozitia [0][0]:
+Kernel positions needed:        Actual matrix positions (after clamping):
+  (-1,-1) (-1,0) (-1,1)          (0,0) (0,0) (0,1)     [1] [1] [2]
+  ( 0,-1) ( 0,0) ( 0,1)    →     (0,0) (0,0) (0,1)  =  [1] [1] [2]
+  ( 1,-1) ( 1,0) ( 1,1)          (1,0) (1,0) (1,1)     [5] [5] [6]
+
+7 7 5
+7 7 5
+8 8 6
+x
+8 1 5
+6 3 5
+4 2 7
+=
+266
+
+Procesarea in place:
+In loc sa salvam sumele intr-o alta matrice, salvam rezultatele in matricea initiala.
+Insa prolema este ca valorile se vor modifica si inmultirile viitoare nu vor fi consistente.
+Prin urmare, folosim un rowBuffer de kxn (3xn), care contine i-1, i, i+1, unde i este indexul sirului curent.
+Pasii sunt urmatorii (pt sequential):
+1. Initializam buffer-ul
+Acesta va contine initial sirurile i-1,i,i (datorita clampingului)
+2. Updatam sirul i, facand convolutia cu elementele din buffer.
+3. Updatam bufferul
+buffer[0] = buffer[1]
+buffer[1] = buffer[2]
+buffer[2] = data.F[i+2]
+astfel, buffer contine sirurile i, i+1, i+2
+Repetam de la pasul 2 pana cuprindem toata matricea
+
+Matricea initiala va avea toate valorile modificate, fara sa fie nevoie de o matrice externa.
+
+In parallel (orizontal):
+Fiecare thread are un numar egal de siruri.
+Nu mai putem face ca la metoda trecuta, intrucat fiind multiple thread-uri, se vor face multe race conditionuri
+Prin urmare facem o copie cu originalF,  pe care o folosim ca sa updatam noul F

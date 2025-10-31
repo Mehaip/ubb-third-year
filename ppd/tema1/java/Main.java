@@ -32,7 +32,6 @@ public class Main {
 
             // Read input
             fm.readFromFile(N, M, k, F, C);
-
             // Sequential in-place - run 10 times and average
             long sequentialTotal = 0;
             int[][] V = new int[N][M];  // Dummy V for interface compatibility
@@ -42,7 +41,7 @@ public class Main {
                 fm.readFromFile(N, M, k, F, C);
                 V = new int[N][M];
                 long start = System.currentTimeMillis();
-                ConvolutionStrategy sequential = new InPlaceSequentialStrategy();
+                ConvolutionStrategy sequential = new InPlaceStrategy(1);
                 sequential.applyConvolution(F, V, C, N, M, k);
                 long end = System.currentTimeMillis();
                 sequentialTotal += (end - start);
@@ -66,7 +65,7 @@ public class Main {
                     fm.readFromFile(N, M, k, F, C);
                     V = new int[N][M];
                     long start = System.currentTimeMillis();
-                    ConvolutionStrategy horizontal = new InPlaceHorizontalStrategy(p);
+                    ConvolutionStrategy horizontal = new InPlaceStrategy(p);
                     horizontal.applyConvolution(F, V, C, N, M, k);
                     long end = System.currentTimeMillis();
                     horizontalTotal += (end - start);
