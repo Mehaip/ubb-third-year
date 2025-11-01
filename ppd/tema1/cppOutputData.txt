@@ -1,0 +1,49 @@
+============================================================
+PPD - Matrix Convolution Benchmark - Lab 2
+============================================================
+
+============================================================
+Testing with N=10, M=10, k=3
+============================================================
+Sequential in-place (avg of 1 runs): 0.00 ms
+
+  [p=2 threads]
+    Horizontal in-place (avg of 1 runs): 0.00 ms (speedup: -nanx)
+
+============================================================
+Testing with N=1000, M=1000, k=3
+============================================================
+Sequential in-place (avg of 1 runs): 367.00 ms
+
+  [p=2 threads]
+    Horizontal in-place (avg of 1 runs): 142.00 ms (speedup: 2.58x)
+
+  [p=4 threads]
+    Horizontal in-place (avg of 1 runs): 118.00 ms (speedup: 3.11x)
+
+  [p=8 threads]
+    Horizontal in-place (avg of 1 runs): 129.00 ms (speedup: 2.84x)
+
+  [p=16 threads]
+    Horizontal in-place (avg of 1 runs): 119.00 ms (speedup: 3.08x)
+
+============================================================
+Testing with N=10000, M=10000, k=3
+============================================================
+Sequential in-place (avg of 1 runs): 37456.00 ms
+
+  [p=2 threads]
+    Horizontal in-place (avg of 1 runs): 14424.00 ms (speedup: 2.60x)
+
+  [p=4 threads]
+    Horizontal in-place (avg of 1 runs): 12210.00 ms (speedup: 3.07x)
+
+  [p=8 threads]
+    Horizontal in-place (avg of 1 runs): 12231.00 ms (speedup: 3.06x)
+
+  [p=16 threads]
+    Horizontal in-place (avg of 1 runs): 12331.00 ms (speedup: 3.04x)
+
+============================================================
+All tests completed!
+============================================================

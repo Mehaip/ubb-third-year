@@ -104,7 +104,7 @@ void writeOutput(const std::string& filename, const ConvolutionData& data) {
     fout << data.n << " " << data.m << "\n";
     for (int i = 0; i < data.n; i++) {
         for (int j = 0; j < data.m; j++) {
-            fout << data.V[i][j];
+            fout << data.F[i][j];
             if (j < data.m - 1) fout << " ";
         }
         fout << "\n";
@@ -221,114 +221,8 @@ static void workerBlock(ConvolutionData& data, int startRow, int endRow, int sta
     }
 }
 
-static void workerInPlaceBarrier(ConvolutionData& data, int startRow, int endRow,
-                                  Barrier& barrier, std::vector<int>& topBorder,
-                                  std::vector<int>& bottomBorder) {
-    int halfK = data.k / 2;
-    int m = data.m, k = data.k;
-
-    std::vector<int> newLine(m);
-
-    int borderRows = std::min(halfK, endRow - startRow);
-    for (int i = startRow; i < startRow + borderRows; i++) {
-        for (int j = 0; j < m; j++) {
-            int sum = 0;
-            for (int ki = 0; ki < k; ki++) {
-                for (int kj = 0; kj < k; kj++) {
-                    int fi = i + ki - halfK;
-                    int fj = j + kj - halfK;
-                    sum += getElement(data, fi, fj) * data.C[ki][kj];
-                }
-            }
-            topBorder[(i - startRow) * m + j] = sum;
-        }
-    }
-
-    int bottomStart = std::max(startRow, endRow - halfK);
-    for (int i = bottomStart; i < endRow; i++) {
-        for (int j = 0; j < m; j++) {
-            int sum = 0;
-            for (int ki = 0; ki < k; ki++) {
-                for (int kj = 0; kj < k; kj++) {
-                    int fi = i + ki - halfK;
-                    int fj = j + kj - halfK;
-                    sum += getElement(data, fi, fj) * data.C[ki][kj];
-                }
-            }
-            bottomBorder[(i - bottomStart) * m + j] = sum;
-        }
-    }
-
-    barrier.arrive_and_wait();
-
-    std::vector<std::vector<int>> lineBuffer(k, std::vector<int>(m));
-
-    for (int i = startRow; i < endRow; i++) {
-        bool isTopBorder = (i < startRow + halfK);
-        bool isBottomBorder = (i >= endRow - halfK);
-
-        if (isTopBorder) {
-            for (int j = 0; j < m; j++) {
-                data.F[i][j] = topBorder[(i - startRow) * m + j];
-            }
-        } else if (isBottomBorder) {
-            for (int j = 0; j < m; j++) {
-                data.F[i][j] = bottomBorder[(i - (endRow - halfK)) * m + j];
-            }
-        } else {
-            lineBuffer[i % k] = data.F[i];
-
-            for (int j = 0; j < m; j++) {
-                int sum = 0;
-                for (int ki = 0; ki < k; ki++) {
-                    for (int kj = 0; kj < k; kj++) {
-                        int fi = i + ki - halfK;
-                        int fj = j + kj - halfK;
-
-                        int value = getElementInPlace(data, fi, fj, lineBuffer, i, k, m);
-                        sum += value * data.C[ki][kj];
-                    }
-                }
-                newLine[j] = sum;
-            }
-
-            data.F[i] = newLine;
-        }
-    }
-}
-
-void applyConvolutionInPlaceParallelBarrier(ConvolutionData& data, int numThreads) {
-    std::vector<std::thread> threads;
-    Barrier barrier(numThreads);
-
-    int rowsPerThread = data.n / numThreads;
-    int extraRows = data.n % numThreads;
-    int halfK = data.k / 2;
-
-    std::vector<std::vector<int>> topBorders(numThreads);
-    std::vector<std::vector<int>> bottomBorders(numThreads);
-
-    int startRow = 0;
-    for (int t = 0; t < numThreads; t++) {
-        int endRow = startRow + rowsPerThread + (t < extraRows ? 1 : 0);
-
-        topBorders[t].resize(halfK * data.m);
-        bottomBorders[t].resize(halfK * data.m);
-
-        threads.emplace_back(workerInPlaceBarrier, std::ref(data), startRow, endRow,
-                            std::ref(barrier), std::ref(topBorders[t]),
-                            std::ref(bottomBorders[t]));
-        startRow = endRow;
-    }
-
-    for (auto& th : threads) {
-        th.join();
-    }
-
-    // Copy results from F to V for output
-    data.V = data.F;
-}
-
+/// @brief sequential
+/// @param data 
 void applyConvolutionInPlace(ConvolutionData& data) {
     int halfK = data.k / 2;
     int n = data.n, m = data.m, k = data.k;
@@ -362,8 +256,6 @@ void applyConvolutionInPlace(ConvolutionData& data) {
         data.F[i] = newLine;
     }
 
-    // Copy results from F to V for output
-    data.V = data.F;
 }
 
 static void workerInPlace(ConvolutionData& data, int startRow, int endRow) {
@@ -374,47 +266,125 @@ static void workerInPlace(ConvolutionData& data, int startRow, int endRow) {
     std::vector<int> newLine(m);
 
     for (int i = startRow; i < endRow; i++) {
-        lineBuffer[i % k] = data.F[i];
-
-        for (int j = 0; j < m; j++) {
-            int sum = 0;
-
-            for (int ki = 0; ki < k; ki++) {
-                for (int kj = 0; kj < k; kj++) {
-                    int fi = i + ki - halfK;
-                    int fj = j + kj - halfK;
-
-                    int value = getElementInPlace(data, fi, fj, lineBuffer, i, k, m);
-                    sum += value * data.C[ki][kj];
-                }
-            }
-
-            newLine[j] = sum;
-        }
+        
+        
 
         data.F[i] = newLine;
     }
 }
 
 void applyConvolutionInPlaceParallel(ConvolutionData& data, int numThreads) {
+    Barrier barrier(numThreads);
     std::vector<std::thread> threads;
 
     int rowsPerThread = data.n / numThreads;
     int extraRows = data.n % numThreads;
 
+    std::vector<std::vector<int>> topBorders(numThreads, std::vector<int>(data.m));
+    std::vector<std::vector<int>> bottomBorders(numThreads, std::vector<int>(data.m));
+
     int startRow = 0;
     for (int t = 0; t < numThreads; t++) {
         int endRow = startRow + rowsPerThread + (t < extraRows ? 1 : 0);
-        threads.emplace_back(workerInPlace, std::ref(data), startRow, endRow);
+
+        const int threadId = t;
+        const int threadStart = startRow;
+        const int threadEnd = endRow;
+
+        threads.emplace_back([&data, &barrier, &topBorders, &bottomBorders, threadId, threadStart, threadEnd, numThreads]() {
+            int n = data.n;
+            int m = data.m;
+            int k = data.k;
+            int halfK = k / 2;
+
+            // Save top row
+            std::copy(data.F[threadStart].begin(), data.F[threadStart].end(), topBorders[threadId].begin());
+
+            // Save bottom row
+            std::copy(data.F[threadEnd - 1].begin(), data.F[threadEnd - 1].end(), bottomBorders[threadId].begin());
+
+            // Wait for all threads to save their borders
+            barrier.arrive_and_wait();
+
+            std::vector<std::vector<int>> lineBuffer(k, std::vector<int>(m));
+            std::vector<int> newLine(m);
+
+            // Process all rows uniformly (including borders)
+            for(int i = threadStart; i < threadEnd; i++){
+                if (i==threadStart){
+                    if (threadId == 0){
+                        ///primul thread si suntem la sirul de sus
+                        std::copy(topBorders[threadId].begin(), topBorders[threadId].end(), lineBuffer[0].begin());
+                        std::copy(data.F[i].begin(), data.F[i].end(), lineBuffer[1].begin());
+                        if(i + 1 < n){
+                            std::copy(data.F[i+1].begin(), data.F[i+1].end(), lineBuffer[2].begin());
+                        }
+                        else{
+                            std::copy(data.F[i].begin(), data.F[i].end(), lineBuffer[2].begin());
+                        }
+                    }
+                    else {
+                        ///sirul de sus de la un thread care nu este primul
+                        std::copy(bottomBorders[threadId-1].begin(), bottomBorders[threadId-1].end(), lineBuffer[0].begin());
+                        std::copy(data.F[i].begin(), data.F[i].end(), lineBuffer[1].begin());
+                        if(i + 1 < threadEnd){
+                            std::copy(data.F[i+1].begin(), data.F[i+1].end(), lineBuffer[2].begin());
+                        }
+                        else if(threadId < numThreads-1){
+                            std::copy(topBorders[threadId+1].begin(), topBorders[threadId+1].end(), lineBuffer[2].begin());
+
+                        }
+                        else {
+                            std::copy(data.F[i].begin(), data.F[i].end(), lineBuffer[2].begin());
+                        }
+                    }
+                }
+                else {
+                    ///nu e primul rand, deci e un rand din mijloc sau final
+                    ///indiferent, primele 2 randuri sunt shiftate l[0]=l[1];l[1]=l[2]
+                    std::copy(lineBuffer[1].begin(), lineBuffer[1].end(), lineBuffer[0].begin());
+                    std::copy(lineBuffer[2].begin(), lineBuffer[2].end(), lineBuffer[1].begin());
+                    if (i==threadEnd-1){///ultimul thread:clamp bottom
+                        if(threadId == numThreads-1){
+                            std::copy(bottomBorders[threadId].begin(), bottomBorders[threadId].end(), lineBuffer[2].begin());
+                        }else{
+                            std::copy(topBorders[threadId+1].begin(), topBorders[threadId+1].end(), lineBuffer[2].begin());
+                        }
+                    } else {
+                        ///daca e doar un rand de mijloc, copiem urmatorul sir
+                        std::copy(data.F[i+1].begin(), data.F[i+1].end(), lineBuffer[2].begin());
+                    }
+                }
+                // Now compute convolution for row i using lineBuffer
+                    for (int j = 0; j < m; j++) {
+                        int sum = 0;
+
+                        for (int ki = 0; ki < k; ki++) {
+                            for (int kj = 0; kj < k; kj++) {
+                                int fj = j + kj - halfK;
+
+                                // Clamp column index
+                                int clampedFj = fj;
+                                if (clampedFj < 0) clampedFj = 0;
+                                if (clampedFj >= m) clampedFj = m - 1;
+
+                                sum += lineBuffer[ki][clampedFj] * data.C[ki][kj];
+                            }
+                        }
+
+                        newLine[j] = sum;
+                    }
+                    std::copy(newLine.begin(), newLine.end(), data.F[i].begin());
+
+            }
+
+        });
         startRow = endRow;
     }
 
     for (auto& th : threads) {
         th.join();
     }
-
-    // Copy results from F to V for output
-    data.V = data.F;
 }
 
 } // namespace VectorImpl

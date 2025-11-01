@@ -30,7 +30,7 @@ x
 =
 266
 
-Procesarea in place:
+Procesarea in place secv:
 In loc sa salvam sumele intr-o alta matrice, salvam rezultatele in matricea initiala.
 Insa prolema este ca valorile se vor modifica si inmultirile viitoare nu vor fi consistente.
 Prin urmare, folosim un rowBuffer de kxn (3xn), care contine i-1, i, i+1, unde i este indexul sirului curent.
@@ -49,5 +49,7 @@ Matricea initiala va avea toate valorile modificate, fara sa fie nevoie de o mat
 
 In parallel (orizontal):
 Fiecare thread are un numar egal de siruri.
-Nu mai putem face ca la metoda trecuta, intrucat fiind multiple thread-uri, se vor face multe race conditionuri
-Prin urmare facem o copie cu originalF,  pe care o folosim ca sa updatam noul F
+Fiecare thread are si un topBorder si un BottomBorder, acestea sunt folosite pt a pastra integritatea matricii
+Presupunem ca matrice[0], e modificat. E bine, ca sa facem matrice[1], avem nevoie de matrice[0], care va fi salvat in topBorder[0] (0 = numarul thread-ului)
+In schimb, avem un moving rowBuffer pe matrice care functioneaza similar cu cel secvential, doar ca la bordere vor fi folosite topBorder si BottomBorder si, desigur,
+thread-urile ruleaza deodata.

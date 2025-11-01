@@ -10,12 +10,12 @@ using namespace std;
 using namespace std::chrono;
 
 
-void runTestLab2(int N, int M, int k, int threadCounts[], int numThreadCounts, const string& inputFile, const string& outputFile) {
+void runTestLab2(int N, int M, int k, int threadCounts[], int numThreadCounts, const string& inputFile, const string& outputFile, const string& outputFileParallel) {
     cout << "\n" << string(60, '=') << "\n";
     cout << "Testing with N=" << N << ", M=" << M << ", k=" << k << "\n";
     cout << string(60, '=') << "\n";
 
-    const int NUM_RUNS = 1;
+    const int NUM_RUNS = 10;
 
     try {
        
@@ -59,7 +59,11 @@ void runTestLab2(int N, int M, int k, int threadCounts[], int numThreadCounts, c
             cout << "    Horizontal in-place (avg of " << NUM_RUNS << " runs): "
                  << fixed << setprecision(2) << horizontalAvg << " ms (speedup: "
                  << fixed << setprecision(2) << horizontalSpeedup << "x)\n";
+
         }
+        VectorImpl::ConvolutionData dataForOutputParallel = VectorImpl::readInput(inputFile);
+        VectorImpl::applyConvolutionInPlaceParallel(dataForOutputParallel,2);
+        VectorImpl::writeOutput(outputFileParallel, dataForOutputParallel);
 
     } catch (const exception& e) {
         cout << "Error during test: " << e.what() << "\n";
@@ -211,15 +215,15 @@ int main() {
 
     // Test 1: N=M=10, k=3, p=2
     int threads1[] = {2};
-    runTestLab2(10, 10, 3, threads1, 1, "data/matrice10.txt", "results/cpp/output10.txt");
+    runTestLab2(10, 10, 3, threads1, 1, "data/matrice10.txt", "results/cpp/sequential/output10.txt","results/cpp/parallel/output10.txt");
 
     // Test 2: N=M=1000, k=3, p=2,4,8,16
     int threads2[] = {2, 4, 8, 16};
-    runTestLab2(1000, 1000, 3, threads2, 4, "data/matrice1000.txt", "results/cpp/output1000.txt");
+    runTestLab2(1000, 1000, 3, threads2, 4, "data/matrice1000.txt", "results/cpp/sequential/output1000.txt","results/cpp/parallel/output1000.txt");
 
     // Test 3: N=M=10000, k=3, p=2,4,8,16
     int threads3[] = {2, 4, 8, 16};
-    runTestLab2(10000, 10000, 3, threads3, 4, "data/matrice10000.txt", "results/cpp/output10000.txt");
+    runTestLab2(10000, 10000, 3, threads3, 4, "data/matrice10000.txt", "results/cpp/sequential/output10000.txt","results/cpp/parallel/output10000.txt");
 
     cout << "\n" << string(60, '=') << "\n";
     cout << "All tests completed!\n";

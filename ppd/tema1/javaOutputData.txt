@@ -1,0 +1,57 @@
+============================================================
+PPD - Matrix Convolution - Lab Selection
+============================================================
+
+Select which lab to run:
+1 - Laborator 1 (Standard convolution with separate output matrix)
+2 - Laborator 2 (In-place convolution with O(n) space)
+
+Enter your choice (1 or 2): 
+*** Running Laborator 2 Tests ***
+
+
+============================================================
+Testing with N=10, M=10, k=3
+============================================================
+Sequential in-place (avg of 1 runs): 1.00 ms
+
+  [p=2 threads]
+    Horizontal in-place (avg of 1 runs): 10.00 ms (speedup: 0.10x)
+
+============================================================
+Testing with N=1000, M=1000, k=3
+============================================================
+Sequential in-place (avg of 1 runs): 185.00 ms
+
+  [p=2 threads]
+    Horizontal in-place (avg of 1 runs): 67.00 ms (speedup: 2.76x)
+
+  [p=4 threads]
+    Horizontal in-place (avg of 1 runs): 26.00 ms (speedup: 7.12x)
+
+  [p=8 threads]
+    Horizontal in-place (avg of 1 runs): 14.00 ms (speedup: 13.21x)
+
+  [p=16 threads]
+    Horizontal in-place (avg of 1 runs): 41.00 ms (speedup: 4.51x)
+
+============================================================
+Testing with N=10000, M=10000, k=3
+============================================================
+Sequential in-place (avg of 1 runs): 5133.00 ms
+
+  [p=2 threads]
+    Horizontal in-place (avg of 1 runs): 1074.00 ms (speedup: 4.78x)
+
+  [p=4 threads]
+    Horizontal in-place (avg of 1 runs): 1809.00 ms (speedup: 2.84x)
+
+  [p=8 threads]
+    Horizontal in-place (avg of 1 runs): 1871.00 ms (speedup: 2.74x)
+
+  [p=16 threads]
+    Horizontal in-place (avg of 1 runs): 1081.00 ms (speedup: 4.75x)
+
+============================================================
+All tests completed!
+============================================================

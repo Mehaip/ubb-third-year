@@ -117,11 +117,10 @@ public class InPlaceStrategy implements ConvolutionStrategy {
                 // Process all rows uniformly (including borders)
                 for (int i = threadStart; i < threadEnd; i++) {
                     // Setup lineBuffer with the 3 rows needed for convolution
-                    if (i == threadStart) {
+                    if (i == threadStart) { ///inceputul thread-ului
                         // First row of this thread
-                        if (threadId == 0) {
-                            // First thread: clamp top (use row 0 twice)
-                            System.arraycopy(topBorders[threadId], 0, lineBuffer[0], 0, m);
+                        if (threadId == 0) { ///primul thread F[0], F[0], F[1]
+                            System.arraycopy(topBorders[threadId], 0, lineBuffer[0], 0, m); 
                             System.arraycopy(F[i], 0, lineBuffer[1], 0, m);
                             if (i + 1 < n) {
                                 System.arraycopy(F[i + 1], 0, lineBuffer[2], 0, m);
@@ -129,25 +128,25 @@ public class InPlaceStrategy implements ConvolutionStrategy {
                                 System.arraycopy(F[i], 0, lineBuffer[2], 0, m);
                             }
                         } else {
-                            // Not first thread: use previous thread's bottom border
+                            // nu e primul thread, dar suntem la inceputul unui thread: bottomBorder[t-1], F[i], F[i+1]
                             System.arraycopy(bottomBorders[threadId - 1], 0, lineBuffer[0], 0, m);
                             System.arraycopy(F[i], 0, lineBuffer[1], 0, m);
                             if (i + 1 < threadEnd) {
                                 System.arraycopy(F[i + 1], 0, lineBuffer[2], 0, m);
-                            } else if (threadId < numThreads - 1) {
+                            } else if (threadId < numThreads - 1) { ///daca urmatoarea linie se afla in urmatorul thread
                                 System.arraycopy(topBorders[threadId + 1], 0, lineBuffer[2], 0, m);
-                            } else {
+                            } else { ///daca nu se afla in matrice
                                 System.arraycopy(F[i], 0, lineBuffer[2], 0, m);
                             }
                         }
-                    } else {
+                    } else { ///nu e primul rand, deci e un rand de mijloc sau ultimul -> facem rotirea
                         // Middle or last rows: rotate the buffer
                         System.arraycopy(lineBuffer[1], 0, lineBuffer[0], 0, m);
                         System.arraycopy(lineBuffer[2], 0, lineBuffer[1], 0, m);
 
-                        // Get next row
+                        
                         if (i == threadEnd - 1) {
-                            // Last row of this thread
+                            // ultimul rand din thread
                             if (threadId == numThreads - 1) {
                                 // Last thread: clamp bottom
                                 System.arraycopy(bottomBorders[threadId], 0, lineBuffer[2], 0, m);
@@ -156,7 +155,7 @@ public class InPlaceStrategy implements ConvolutionStrategy {
                                 System.arraycopy(topBorders[threadId + 1], 0, lineBuffer[2], 0, m);
                             }
                         } else {
-                            // Normal case: next row is within range
+                            // daca e un rand de mijloc, atunci doar copiem urmatorul sir
                             System.arraycopy(F[i + 1], 0, lineBuffer[2], 0, m);
                         }
                     }

@@ -17,18 +17,18 @@ public class Main {
         return mat;
     }
 
-    public static void runTestLab2(int N, int M, int k, int[] threadCounts, String inputFileName, String outputFileName) {
+    public static void runTestLab2(int N, int M, int k, int[] threadCounts, String inputFileName, String outputFileName, String outputFileNameParallel) {
         System.out.println("\n" + "=".repeat(60));
         System.out.println("Testing with N=" + N + ", M=" + M + ", k=" + k);
         System.out.println("=".repeat(60));
 
-        final int NUM_RUNS = 1;
+        final int NUM_RUNS = 10;
 
         try {
             int[][] F = new int[N][M];
             int[][] C = new int[k][k];
             FileManager fm = new FileManager(inputFileName, outputFileName);
-
+            FileManager fmp = new FileManager(inputFileName, outputFileNameParallel);
 
             // Read input
             fm.readFromFile(N, M, k, F, C);
@@ -63,7 +63,7 @@ public class Main {
                 for (int run = 0; run < NUM_RUNS; run++) {
                     // Re-read F for each run since it's modified in-place
                     fm.readFromFile(N, M, k, F, C);
-                    V = new int[N][M];
+                    V = new int[1][1];
                     long start = System.currentTimeMillis();
                     ConvolutionStrategy horizontal = new InPlaceStrategy(p);
                     horizontal.applyConvolution(F, V, C, N, M, k);
@@ -76,6 +76,7 @@ public class Main {
                                  String.format("%.2f", horizontalAvg) + " ms (speedup: " +
                                  String.format("%.2f", horizontalSpeedup) + "x)");
             }
+            fmp.writeOutputFile(F, N, M);
 
         } catch (IOException e) {
             System.out.println("Error during test: " + e.getMessage());
@@ -178,7 +179,7 @@ public class Main {
         System.out.println("2 - Laborator 2 (In-place convolution with O(n) space)");
         System.out.print("\nEnter your choice (1 or 2): ");
 
-        int choice = scanner.nextInt();
+        int choice = 2;
 
         if (choice == 1) {
             System.out.println("\n*** Running Laborator 1 Tests ***\n");
@@ -202,13 +203,13 @@ public class Main {
             System.out.println("\n*** Running Laborator 2 Tests ***\n");
 
             // Test 1: N=M=10, k=3, p=2
-            runTestLab2(10, 10, 3, new int[]{2}, "data/matrice10.txt", "results/java/output10.txt");
+            runTestLab2(10, 10, 3, new int[]{2}, "data/matrice10.txt", "results/java/sequential/output10.txt","results/java/parallel/output10.txt");
 
             // Test 2: N=M=1000, k=3, p=2,4,8,16
-            runTestLab2(1000, 1000, 3, new int[]{2, 4, 8, 16}, "data/matrice1000.txt", "results/java/output1000.txt");
+            runTestLab2(1000, 1000, 3, new int[]{2, 4, 8, 16}, "data/matrice1000.txt", "results/java/sequential/output1000.txt","results/java/parallel/output1000.txt");
 
             // Test 3: N=M=10000, k=3, p=2,4,8,16
-            runTestLab2(10000, 10000, 3, new int[]{2, 4, 8, 16}, "data/matrice10000.txt", "results/java/output10000.txt");
+            runTestLab2(10000, 10000, 3, new int[]{2, 4, 8, 16}, "data/matrice10000.txt", "results/java/sequential/output10000.txt","results/java/parallel/output10000.txt");
 
         } else {
             System.out.println("Invalid choice! Please run again and select 1 or 2.");
