@@ -1,14 +1,3 @@
-============================================================
-PPD - Matrix Convolution - Lab Selection
-============================================================
-
-Select which lab to run:
-1 - Laborator 1 (Standard convolution with separate output matrix)
-2 - Laborator 2 (In-place convolution with O(n) space)
-
-Enter your choice (1 or 2): 
-*** Running Laborator 2 Tests ***
-
 
 ============================================================
 Testing with N=10, M=10, k=3
@@ -35,6 +24,8 @@ Sequential in-place (avg of 10 runs): 51.10 ms
   [p=16 threads]
     Horizontal in-place (avg of 10 runs): 13.80 ms (speedup: 3.70x)
 
+  
+
 ============================================================
 Testing with N=10000, M=10000, k=3
 ============================================================
@@ -55,3 +46,11 @@ Sequential in-place (avg of 10 runs): 4401.80 ms
 ============================================================
 All tests completed!
 ============================================================
+
+Observatii: 
+p=4 threads are cele mai bune rezultatele
+p=16 threads are cele mai proaste rezultate
+comparativ cu cpp, java are niste rezultate mult mai bune ca speedup
+threadurile sunt cele mai bune pt numere mari.
+average speedup 1000x1000: 3.595
+average speedup 10000x10000: 3.91

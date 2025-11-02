@@ -47,3 +47,10 @@ Sequential in-place (avg of 10 runs): 43190.50 ms
 ============================================================
 All tests completed!
 ============================================================
+
+observatii:
+pentru 10000x10000, p=16 are cel mai bun rezultat, comparativ cu orice numar din toate statisticile
+p=2 are cea mai proasta performanta
+pentru numere mai mari cpp e mult mai bun ca speedup:
+average 1000x1000: 2.32
+average 10000x10000:2,70
