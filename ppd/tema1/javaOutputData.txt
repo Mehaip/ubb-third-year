@@ -13,44 +13,44 @@ Enter your choice (1 or 2):
 ============================================================
 Testing with N=10, M=10, k=3
 ============================================================
-Sequential in-place (avg of 1 runs): 1.00 ms
+Sequential in-place (avg of 10 runs): 0.10 ms
 
   [p=2 threads]
-    Horizontal in-place (avg of 1 runs): 10.00 ms (speedup: 0.10x)
+    Horizontal in-place (avg of 10 runs): 2.70 ms (speedup: 0.04x)
 
 ============================================================
 Testing with N=1000, M=1000, k=3
 ============================================================
-Sequential in-place (avg of 1 runs): 185.00 ms
+Sequential in-place (avg of 10 runs): 51.10 ms
 
   [p=2 threads]
-    Horizontal in-place (avg of 1 runs): 67.00 ms (speedup: 2.76x)
+    Horizontal in-place (avg of 10 runs): 23.70 ms (speedup: 2.16x)
 
   [p=4 threads]
-    Horizontal in-place (avg of 1 runs): 26.00 ms (speedup: 7.12x)
+    Horizontal in-place (avg of 10 runs): 11.20 ms (speedup: 4.56x)
 
   [p=8 threads]
-    Horizontal in-place (avg of 1 runs): 14.00 ms (speedup: 13.21x)
+    Horizontal in-place (avg of 10 runs): 12.90 ms (speedup: 3.96x)
 
   [p=16 threads]
-    Horizontal in-place (avg of 1 runs): 41.00 ms (speedup: 4.51x)
+    Horizontal in-place (avg of 10 runs): 13.80 ms (speedup: 3.70x)
 
 ============================================================
 Testing with N=10000, M=10000, k=3
 ============================================================
-Sequential in-place (avg of 1 runs): 5133.00 ms
+Sequential in-place (avg of 10 runs): 4401.80 ms
 
   [p=2 threads]
-    Horizontal in-place (avg of 1 runs): 1074.00 ms (speedup: 4.78x)
+    Horizontal in-place (avg of 10 runs): 1075.50 ms (speedup: 4.09x)
 
   [p=4 threads]
-    Horizontal in-place (avg of 1 runs): 1809.00 ms (speedup: 2.84x)
+    Horizontal in-place (avg of 10 runs): 1057.60 ms (speedup: 4.16x)
 
   [p=8 threads]
-    Horizontal in-place (avg of 1 runs): 1871.00 ms (speedup: 2.74x)
+    Horizontal in-place (avg of 10 runs): 1060.90 ms (speedup: 4.15x)
 
   [p=16 threads]
-    Horizontal in-place (avg of 1 runs): 1081.00 ms (speedup: 4.75x)
+    Horizontal in-place (avg of 10 runs): 1358.30 ms (speedup: 3.24x)
 
 ============================================================
 All tests completed!

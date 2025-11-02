@@ -5,44 +5,44 @@ PPD - Matrix Convolution Benchmark - Lab 2
 ============================================================
 Testing with N=10, M=10, k=3
 ============================================================
-Sequential in-place (avg of 1 runs): 0.00 ms
+Sequential in-place (avg of 10 runs): 0.00 ms
 
   [p=2 threads]
-    Horizontal in-place (avg of 1 runs): 0.00 ms (speedup: -nanx)
+    Horizontal in-place (avg of 10 runs): 0.00 ms (speedup: -nanx)
 
 ============================================================
 Testing with N=1000, M=1000, k=3
 ============================================================
-Sequential in-place (avg of 1 runs): 367.00 ms
+Sequential in-place (avg of 10 runs): 447.60 ms
 
   [p=2 threads]
-    Horizontal in-place (avg of 1 runs): 142.00 ms (speedup: 2.58x)
+    Horizontal in-place (avg of 10 runs): 224.60 ms (speedup: 1.99x)
 
   [p=4 threads]
-    Horizontal in-place (avg of 1 runs): 118.00 ms (speedup: 3.11x)
+    Horizontal in-place (avg of 10 runs): 193.90 ms (speedup: 2.31x)
 
   [p=8 threads]
-    Horizontal in-place (avg of 1 runs): 129.00 ms (speedup: 2.84x)
+    Horizontal in-place (avg of 10 runs): 175.90 ms (speedup: 2.54x)
 
   [p=16 threads]
-    Horizontal in-place (avg of 1 runs): 119.00 ms (speedup: 3.08x)
+    Horizontal in-place (avg of 10 runs): 182.90 ms (speedup: 2.45x)
 
 ============================================================
 Testing with N=10000, M=10000, k=3
 ============================================================
-Sequential in-place (avg of 1 runs): 37456.00 ms
+Sequential in-place (avg of 10 runs): 43190.50 ms
 
   [p=2 threads]
-    Horizontal in-place (avg of 1 runs): 14424.00 ms (speedup: 2.60x)
+    Horizontal in-place (avg of 10 runs): 17969.80 ms (speedup: 2.40x)
 
   [p=4 threads]
-    Horizontal in-place (avg of 1 runs): 12210.00 ms (speedup: 3.07x)
+    Horizontal in-place (avg of 10 runs): 16468.00 ms (speedup: 2.62x)
 
   [p=8 threads]
-    Horizontal in-place (avg of 1 runs): 12231.00 ms (speedup: 3.06x)
+    Horizontal in-place (avg of 10 runs): 15382.40 ms (speedup: 2.81x)
 
   [p=16 threads]
-    Horizontal in-place (avg of 1 runs): 12331.00 ms (speedup: 3.04x)
+    Horizontal in-place (avg of 10 runs): 14581.20 ms (speedup: 2.96x)
 
 ============================================================
 All tests completed!

@@ -8,13 +8,6 @@ public class InPlaceStrategy implements ConvolutionStrategy {
         this.numThreads = numThreads;
     }
 
-    private int getElement(int[][] F, int i, int j, int n, int m) {
-        if (i < 0) i = 0;
-        if (i >= n) i = n - 1;
-        if (j < 0) j = 0;
-        if (j >= m) j = m - 1;
-        return F[i][j];
-    }
 
     // Helper function for in-place convolution that uses lineBuffer when appropriate
     private int getElementInPlace(int[][] F, int fi, int fj, int[][] lineBuffer,
