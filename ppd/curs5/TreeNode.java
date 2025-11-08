@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class TreeNode {
     TreeNode parent = null;
@@ -39,6 +40,7 @@ public class TreeNode {
     }
     
     public static void exemplu_corect(){
+        System.out.println("EXEMPLU CORECT");
         TreeNode radacina = new TreeNode("A");
         TreeNode copil1 = new TreeNode("B");
         TreeNode copil2 = new TreeNode("C");
@@ -57,14 +59,64 @@ public class TreeNode {
         }
     }
 
-    public static void exemplu_deadlock(){
-
+    
+    public static void exemplu_deadlock() throws InterruptedException {
+    System.out.println("Exemplu deadlock");
+    TreeNode A = new TreeNode("A");
+    TreeNode B = new TreeNode("B");
+    
+    CountDownLatch latch = new CountDownLatch(2);
+    
+    Thread thread1 = new Thread(() -> {
+        synchronized(A) {
+            System.out.println("Thread 1: locked A");
+            latch.countDown(); // 2 -> 1
+            
+            try { 
+                latch.await(); // asteptam t2 sa faca si el operatia
+            } catch (InterruptedException e) {}
+            
+            System.out.println("Thread 1: trying to lock B");
+            A.addChild(B); 
+        }
+        System.out.println("Thread 1: SUCCESS (nu se va printa)");
+    });
+    
+    Thread thread2 = new Thread(() -> {
+        synchronized(B) {
+            System.out.println("Thread 2: locked B");
+            latch.countDown(); // 1 -> 0
+            
+            try { 
+                latch.await(); // asteptam t1 sa acceseze countDown()
+            } catch (InterruptedException e) {}
+            
+            System.out.println("Thread 2: trying to lock A");
+            B.addChild(A); 
+        }
+        System.out.println("Thread 2: SUCCESS (nu se va printa)");
+    });
+    
+    thread1.start();
+    thread2.start();
+    
+    // Check if deadlock occurred
+    thread1.join(3000);
+    thread2.join(3000);
+    
+    if(thread1.isAlive() && thread2.isAlive()) {
+        System.out.println("\ndeadlock confirmat, ambele threaduri sunt in viata si asteapta pt celalalt");
     }
+}
   
     public static void main(String[] args) {
         
+
         exemplu_corect();
-        //exemplu deadlock
+        try{
+        exemplu_deadlock();
+        }
+        catch(InterruptedException e){}
 
     }
 }
