@@ -29,7 +29,7 @@ A.addChild(B);
 si altul care face
 B.addChild(A);
 A si B sunt ambele locked, intrucat thread-urile incep deodata.
-In metoda addChild(), cand ambele metode incerc sa dea call la setParentOnly(), nu va fi posibil deoarece acel obiect este LOCKED de celalalt thread.
+In metoda addChild(), cand ambele metode incerc sa dea call la setParentOnly(), nu va fi posibil deoarece acel obiect este LOCKED de celalalt thread. Astfel se face circular wait.
 
 In metoda exemplu_deadlock() se prezinta exact cazul de deadlock pentru arbore.
 Fiindca thread-urile se completau prea repede, thread 1 termina deja inainte ca thread 2 sa inceapa, asa ca am introdus CountDownLatch. Este un sync tool care face thread-urile sa astepte pana un numar de operatii este completat.
@@ -37,5 +37,4 @@ In exemplul nostru, am setat ca numarul de operatii sa fie 2.
 Threadul1 da lock la A => operatii ramase 1 (prin comanda countDown())
 Threadul2 da lock la b => operatii ramase 0
 
-Apoi ambele thread-uri incearca metoda addChild() dar vor astepta unul pentru celalalt, intrucat ambele
-obiecte sunt locked
+Apoi ambele thread-uri sunt pe metoda addChild() dar vor astepta unul pentru celalalt, intrucat ambele obiecte sunt locked
