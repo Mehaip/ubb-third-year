@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "file_manager.h"
 #include <fstream>
+#include <string>
 #include "math.h"
 
 int main(int argc, char *argv[]){
@@ -12,9 +13,23 @@ int main(int argc, char *argv[]){
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &processId);
 
+    // Validate command-line arguments
+    if (argc != 2) {
+        if (processId == 0) {
+            printf("Usage: %s <file_number>\n", argv[0]);
+            printf("file_number should be 1, 2, or 3\n");
+        }
+        MPI_Finalize();
+        return 1;
+    }
+
+    std::string file_number = argv[1];
+    std::string input_file1 = "input_files/numar1/" + file_number + ".txt";
+    std::string input_file2 = "input_files/numar2/" + file_number + ".txt";
+
     //printf("%d - %d\n", processId, num_processes);
-    FileManager fm1("input_files/numar1/1.txt");
-    FileManager fm2("input_files/numar2/1.txt");
+    FileManager fm1(input_file1.c_str());
+    FileManager fm2(input_file2.c_str());
     std::vector<unsigned char> num1 = fm1.read_number();
     std::vector<unsigned char> num2 = fm2.read_number();
     int digit_count;
@@ -70,8 +85,10 @@ int main(int argc, char *argv[]){
         }
         carry = incoming_carry;
     }
-    if (processId == num_processes - 1 && (carry > 0|| carry_after_local)){
-        extra_digit = 1;
+    if (processId == num_processes - 1){  ///EROARE 
+        if (carry > 0 || carry_after_local) {
+            extra_digit = 1;
+        }
         MPI_Send(&extra_digit, 1, MPI_UNSIGNED_CHAR, 0, 2, MPI_COMM_WORLD);
     }
 
@@ -88,7 +105,8 @@ int main(int argc, char *argv[]){
             all_results.data(), digit_count_per_process, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
 
     if(processId == 0){
-    std::ofstream fout("numar3scatter.txt");
+    std::string output_file = "output_files/scatter_gather/" + file_number + ".txt";
+    std::ofstream fout(output_file.c_str());
         ///acum all_results contine rezultatul de la thread 0 la thread noThreads - 1
     if(extra_digit)
         fout<< "1";

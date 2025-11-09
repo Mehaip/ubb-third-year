@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "file_manager.h"
 #include <fstream>
+#include <string>
+
 int main(int argc, char*argv[]){
 
     MPI_Init(&argc, &argv);
@@ -9,13 +11,27 @@ int main(int argc, char*argv[]){
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &processId);
 
+    // Validate command-line arguments
+    if (argc != 2) {
+        if (processId == 0) {
+            printf("Usage: %s <file_number>\n", argv[0]);
+            printf("file_number should be 1, 2, or 3\n");
+        }
+        MPI_Finalize();
+        return 1;
+    }
+
+    std::string file_number = argv[1];
+
     printf("%d - %d\n", processId, num_processes);
 
     int num_workers = num_processes - 1;
 
     if (processId == 0){
-        FileManager fm1("input_files/numar1/1.txt");
-        FileManager fm2("input_files/numar2/1.txt");
+        std::string input_file1 = "input_files/numar1/" + file_number + ".txt";
+        std::string input_file2 = "input_files/numar2/" + file_number + ".txt";
+        FileManager fm1(input_file1.c_str());
+        FileManager fm2(input_file2.c_str());
 
         std::vector<unsigned char> num1 = fm1.read_number();
         std::vector<unsigned char> num2 = fm2.read_number();
@@ -53,7 +69,8 @@ int main(int argc, char*argv[]){
             MPI_Send(&end_signal, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
         }
 
-        std::ofstream fout("numar3.txt");
+        std::string output_file = "output_files/standard_comm/" + file_number + ".txt";
+        std::ofstream fout(output_file.c_str());
         std::vector <unsigned char> result;
 
         for (int i = num_processes-1; i > 0; i--){ ///WOW!! INCEPEM DE LA ULTIMUL THREAD PT CA EL ARE CELE MAI IMPORTANTE NUMERE
