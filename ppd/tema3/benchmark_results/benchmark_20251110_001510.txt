@@ -1,0 +1,94 @@
+MPI Big Number Addition Benchmark - Mon Nov 10 12:15:10 AM EET 2025
+Number of runs per configuration: 10
+========================================
+
+Compiling programs...
+Compilation complete
+
+
+Testing: sequential with file 1.txt
+------------------------------------------------
+Average time: .006185s (±.001414s)
+
+
+Testing: sequential with file 3.txt
+------------------------------------------------
+Average time: .028489s (±.003316s)
+
+
+Testing: sequential with file 2.txt
+------------------------------------------------
+Average time: .009575s (±.002000s)
+
+
+Testing: scatter with file 1.txt and 5 processes
+------------------------------------------------
+Average time: .038108s (±.002449s)
+
+
+Testing: scatter with file 2.txt and 5 processes
+------------------------------------------------
+Average time: .037287s (±.004000s)
+
+
+Testing: scatter with file 2.txt and 9 processes
+------------------------------------------------
+Average time: .038863s (±.003162s)
+
+
+Testing: scatter with file 2.txt and 17 processes
+------------------------------------------------
+Average time: .038846s (±.003316s)
+
+
+Testing: scatter with file 3.txt and 5 processes
+------------------------------------------------
+Average time: .040227s (±.004000s)
+
+
+Testing: scatter with file 3.txt and 9 processes
+------------------------------------------------
+Average time: .039284s (±.003741s)
+
+
+Testing: scatter with file 3.txt and 17 processes
+------------------------------------------------
+Average time: .040749s (±.003605s)
+
+
+Testing: standard with file 1.txt and 5 processes
+------------------------------------------------
+Average time: .042543s (±.005830s)
+
+
+Testing: standard with file 2.txt and 5 processes
+------------------------------------------------
+Average time: .044649s (±.006082s)
+
+
+Testing: standard with file 2.txt and 9 processes
+------------------------------------------------
+Average time: .042677s (±.003000s)
+
+
+Testing: standard with file 2.txt and 17 processes
+------------------------------------------------
+Average time: .041328s (±.006082s)
+
+
+Testing: standard with file 3.txt and 5 processes
+------------------------------------------------
+Average time: .038963s (±.002000s)
+
+
+Testing: standard with file 3.txt and 9 processes
+------------------------------------------------
+Average time: .040046s (±.002645s)
+
+
+Testing: standard with file 3.txt and 17 processes
+------------------------------------------------
+Average time: .042029s (±.002645s)
+
+
+Correctness check: PASSED
