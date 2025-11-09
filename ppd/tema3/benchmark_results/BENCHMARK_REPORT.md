@@ -114,9 +114,5 @@
 
 ## Analysis Notes
 
-- **Speedup** is calculated as: `Sequential Time / Parallel Time`
-- **Efficiency** is calculated as: `(Speedup / Number of Processes) × 100%`
-- Efficiency > 100% may indicate the parallel version is unexpectedly faster (measurement variance or system effects)
-- Each configuration is averaged over 10 runs
-- For small problem sizes, MPI overhead dominates and sequential is faster
-- For larger problem sizes (10M+ digits), parallelization should show benefits
+- **Speedup** = `Sequential Time / Parallel Time`
+- **Efficiency** = `(Speedup / Number of Processes) × 100%`

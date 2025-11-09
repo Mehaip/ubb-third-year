@@ -57,10 +57,6 @@ int main(int argc, char* argv[]) {
 
     fout.close();
 
-    printf("Addition completed successfully!\n");
-    printf("Input 1: %s\n", input_file1.c_str());
-    printf("Input 2: %s\n", input_file2.c_str());
-    printf("Output:  %s\n", output_file.c_str());
 
     return 0;
 }
