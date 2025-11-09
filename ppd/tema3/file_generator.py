@@ -25,6 +25,6 @@ g.write("100 ")
 for _ in range(1,100001):
     f.write(str(x))
     x = random.randint(9)
-    if _ < 100:
+    if _ <= 100:
         g.write(str(y))
         y = random.randint(9)

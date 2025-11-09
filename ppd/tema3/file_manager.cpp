@@ -12,21 +12,21 @@ std::vector<unsigned char> FileManager::read_number(){
         return std::vector<unsigned char>();
     }
     
-    printf("Fisierul este accesat: %s\n", this->fileName.c_str());
+   // printf("Fisierul este accesat: %s\n", this->fileName.c_str());
     
     int no_of_digits;
     if (!(fin >> no_of_digits)) {
         printf("ERROR: Failed to read number of digits\n");
         return std::vector<unsigned char>();
     }
-    printf("DEBUG: no_of_digits = %d\n", no_of_digits);
+    ///printf("DEBUG: no_of_digits = %d\n", no_of_digits);
     
     std::string num;
     if (!(fin >> num)) {
         printf("ERROR: Failed to read number string\n");
         return std::vector<unsigned char>();
     }
-    printf("DEBUG: num = %s (length: %zu)\n", num.c_str(), num.length());
+    ///printf("DEBUG: num = %s (length: %zu)\n", num.c_str(), num.length());
     
     if (num.length() != no_of_digits) {
         printf("ERROR: Mismatch! Expected %d digits but got %zu\n", 
@@ -39,6 +39,6 @@ std::vector<unsigned char> FileManager::read_number(){
         digits[i] = num[no_of_digits - 1 - i] - '0';
     }
     
-    printf("DEBUG: Successfully read %d digits\n", no_of_digits);
+   // printf("DEBUG: Successfully read %d digits\n", no_of_digits);
     return digits;
 }
