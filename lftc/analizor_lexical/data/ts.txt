@@ -1,7 +1,14 @@
+0123567
+0b01010101
+0x132ABC
+10.5
 5
 70.67
 a
 b
 c
+d
+e
+f
 iostream
 main

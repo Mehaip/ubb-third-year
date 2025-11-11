@@ -73,6 +73,7 @@ class Token:
     value: str
     line: int
     column: int
+    af: bool = False
     
     def __str__(self):
         return f"Line {self.line}, Col {self.column}: TOKEN[{self.type.name}] = '{self.value}'"

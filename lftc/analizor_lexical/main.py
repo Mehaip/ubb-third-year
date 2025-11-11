@@ -34,7 +34,7 @@ if __name__ == "__main__":
         # Afișează tokenurile
 
         with open("data/fip.csv", "w") as f:
-            f.write("Atom lexical,Value,Pozitie in TS\n")
+            f.write("Atom lexical,Value,Pozitie in TS,Automat Finit\n")
             for token in tokens:
                 if token.type.value != ",":
                     f.write(token.type.name + "," + token.value + ",")
@@ -44,6 +44,11 @@ if __name__ == "__main__":
                     f.write(str(bst_sorted.index(token.value) + 1))
                 else:
                     f.write("-1")
+                f.write(",")
+                if token.af:
+                    f.write("DA")
+                else:
+                    f.write("NU")
                 f.write("\n")
 
         print("Fisierul fip.csv completat!")
