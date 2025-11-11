@@ -1,0 +1,16 @@
+SEND/RECV
+
+Threadul master trimite catre fiecare threadId != 0 un chunkSize si apoi cele 2 numere cu chunkSize
+Initial, pe branch-ul worker-ului se calculeaza numarul local. Iar apoi primeste un carry de la 
+thread-ul precedent. Astfel, el va adauga la suma calculata local si carry-ul.
+
+Apoi worker-ul trimite inapoi numarul calculat si masterul le afiseaza in ordinea care trebuie.
+
+Scatter/Gather
+
+Threadul master trimite in mod egal la celelalte thread-uri (inclusiv el) cate un chunk din cele 2 numere.
+Chunksize-ul este calculat in asa fel incat fiecare thread sa aibe un nr egal de cifre din numere.
+Scatter si gather for trimite toate aceeasi dimensiune, prin urmare nr trebuie modificat ca sa respecte cerintele.
+Dupa ce fiecare worker primeste prin scatter chunk-ul, el calculeaza si in aceeasi maniera ca la send/recv calculeaza carry-ul.
+Numarul calculat este trimis prin gather si este toate chunk-urile sunt salvate in ordinea thread-urilor
+de la 0 la noThreads - 1

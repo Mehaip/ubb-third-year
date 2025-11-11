@@ -102,7 +102,7 @@ class DFA:
         return f"DFA(states={len(self.states)}, initial={self.initial_state}, final={self.final_states})"
 
 
-# Example DFAs 
+# DFA PENTRU IDNETIFICATORI 
 
 def create_identifier_dfa() -> DFA:
     """

@@ -82,33 +82,30 @@
 ### Best Performing Configurations
 
 
-**File 1.txt (~19 digits):**
+**File 1.txt (16 digits):**
 - Sequential: 0.007383s
 - Best MPI: `scatter` with 5 processes
   - Time: 0.036237s
   - Speedup: 0.204x
   - Efficiency: 4.1%
 
-**File 2.txt (~10K digits):**
+**File 2.txt (10k digits):**
 - Sequential: 0.011213s
 - Best MPI: `standard` with 9 processes
   - Time: 0.036754s
   - Speedup: 0.305x
-  - Efficiency: 3.4%
 
-**File 3.txt (~100K digits):**
+**File 3.txt (100K digits):**
 - Sequential: 0.029489s
 - Best MPI: `standard` with 9 processes
   - Time: 0.035024s
   - Speedup: 0.842x
-  - Efficiency: 9.4%
 
-**File 4.txt (~10M digits):**
+**File 4.txt (10M digits):**
 - Sequential: 1.749377s
 - Best MPI: `scatter` with 17 processes
   - Time: 0.036846s
   - Speedup: 47.478x
-  - Efficiency: 279.3%
 
 ---
 
@@ -116,3 +113,10 @@
 
 - **Speedup** = `Sequential Time / Parallel Time`
 - **Efficiency** = `(Speedup / Number of Processes) × 100%`
+
+ALTE OBSERVATII:
+PENTRU CELE CARE NU AU 10MIL
+17 PROCESE CEL MAI INEFICIENT
+5 PROCESE CEL MAI EFICIENT
+PENTRU 10MIL
+17 PROCESE CEL MAI RAPID

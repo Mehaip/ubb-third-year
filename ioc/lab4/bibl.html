@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library - Accessible Application</title>
+    <style>
+        /* Reset and basic styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Skip link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Header */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Main container */
+        main {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Form */
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Indicator for required fields */
+        .required {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button:focus {
+            outline: 3px solid #f39c12;
+            outline-offset: 2px;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        /* Search section */
+        .search-section {
+            margin-bottom: 30px;
+        }
+
+        /* Books list */
+        .books-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .books-list {
+            list-style: none;
+        }
+
+        .book-item {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .book-item:focus-within {
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .book-author {
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .book-year {
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
+        /* Live region for announcements */
+        .sr-only {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        /* Message when there are no books */
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #95a5a6;
+            font-style: italic;
+        }
+
+        /* Statistics */
+        .stats {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            .book-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-delete {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip link for quick navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header role="banner">
+        <h1>My Library</h1>
+        <p>Accessible application for managing books</p>
+    </header>
+
+    <!-- Main content -->
+    <main id="main-content" role="main">
+        <!-- Add book form section -->
+        <section class="form-section" aria-labelledby="form-heading">
+            <h2 id="form-heading">Add a new book</h2>
+
+            <form id="book-form" aria-label="Form for adding a new book">
+                <div class="form-group">
+                    <label for="book-title">
+                        Title <span class="required" aria-label="required field">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="book-title"
+                        name="title"
+                        required
+                        aria-required="true"
+                        aria-describedby="title-description"
+                        placeholder="Enter the book title"
+                    >
+                    <span id="title-description" class="sr-only">Enter the full title of the book</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="book-author">
+                        Author <span class="required" aria-label="required field">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="book-author"
+                        name="author"
+                        required
+                        aria-required="true"
+                        aria-describedby="author-description"
+                        placeholder="Enter the author's name"
+                    >
+                    <span id="author-description" class="sr-only">Enter the full name of the author</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="book-year">
+                        Publication year <span class="required" aria-label="required field">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        id="book-year"
+                        name="year"
+                        min="1000"
+                        max="2025"
+                        required
+                        aria-required="true"
+                        aria-describedby="year-description"
+                        placeholder="2024"
+                    >
+                    <span id="year-description" class="sr-only">Enter the publication year of the book, between 1000 and 2025</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="book-genre">Literary genre</label>
+                    <select
+                        id="book-genre"
+                        name="genre"
+                        aria-describedby="genre-description"
+                    >
+                        <option value="">Select genre</option>
+                        <option value="fiction">Fiction</option>
+                        <option value="non-fiction">Non-fiction</option>
+                        <option value="science-fiction">Science Fiction</option>
+                        <option value="fantasy">Fantasy</option>
+                        <option value="romance">Romance</option>
+                        <option value="thriller">Thriller</option>
+                        <option value="biography">Biography</option>
+                        <option value="historical">Historical</option>
+                    </select>
+                    <span id="genre-description" class="sr-only">Select the literary genre of the book</span>
+                </div>
+
+                <button type="submit" aria-label="Add book to library">
+                    Add Book
+                </button>
+            </form>
+        </section>
+
+        <!-- Search section -->
+        <section class="search-section" aria-labelledby="search-heading">
+            <h2 id="search-heading">Search library</h2>
+            <div class="form-group">
+                <label for="search-input">Search by title or author</label>
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Search book..."
+                    aria-describedby="search-description"
+                    aria-controls="books-list"
+                >
+                <span id="search-description" class="sr-only">
+                    Enter text to search for books by title or author. Results update automatically.
+                </span>
+            </div>
+        </section>
+
+        <!-- Statistics -->
+        <div class="stats" role="status" aria-live="polite" aria-atomic="true">
+            <strong>Statistics:</strong>
+            <span id="stats-text">No books in library</span>
+        </div>
+
+        <!-- Books list section -->
+        <section class="books-section" aria-labelledby="books-heading">
+            <h2 id="books-heading">My books</h2>
+            <ul id="books-list" class="books-list" role="list" aria-live="polite">
+                <li class="empty-message" role="status">
+                    No books in library. Add your first book using the form above.
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Live region for screen reader announcements -->
+    <div
+        id="announcements"
+        role="status"
+        aria-live="assertive"
+        aria-atomic="true"
+        class="sr-only"
+    ></div>
+
+    <script>
+        // Class for managing books
+        class BookManager {
+            constructor() {
+                this.books = this.loadBooks();
+                this.init();
+            }
+
+            // Initialize events
+            init() {
+                document.getElementById('book-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addBook();
+                });
+
+                document.getElementById('search-input').addEventListener('input', (e) => {
+                    this.filterBooks(e.target.value);
+                });
+
+                this.renderBooks();
+            }
+
+            // Add new book
+            addBook() {
+                const title = document.getElementById('book-title').value.trim();
+                const author = document.getElementById('book-author').value.trim();
+                const year = document.getElementById('book-year').value;
+                const genre = document.getElementById('book-genre').value;
+
+                if (!title || !author || !year) {
+                    this.announce('Error: All required fields must be completed.');
+                    return;
+                }
+
+                const book = {
+                    id: Date.now(),
+                    title,
+                    author,
+                    year: parseInt(year),
+                    genre: genre || 'Undefined'
+                };
+
+                this.books.push(book);
+                this.saveBooks();
+                this.renderBooks();
+                this.announce(`Book "${title}" by ${author} has been successfully added to the library.`);
+
+                // Reset form
+                document.getElementById('book-form').reset();
+                document.getElementById('book-title').focus();
+            }
+
+            // Delete book
+            deleteBook(id) {
+                const book = this.books.find(b => b.id === id);
+                if (!book) return;
+
+                const confirmDelete = confirm(`Are you sure you want to delete the book "${book.title}"?`);
+                if (confirmDelete) {
+                    this.books = this.books.filter(b => b.id !== id);
+                    this.saveBooks();
+                    this.renderBooks();
+                    this.announce(`Book "${book.title}" has been removed from the library.`);
+                }
+            }
+
+            // Filter books
+            filterBooks(searchTerm) {
+                const term = searchTerm.toLowerCase().trim();
+                const filteredBooks = this.books.filter(book =>
+                    book.title.toLowerCase().includes(term) ||
+                    book.author.toLowerCase().includes(term)
+                );
+
+                this.renderBooks(filteredBooks);
+
+                if (searchTerm) {
+                    this.announce(`Search: ${filteredBooks.length} books found for "${searchTerm}"`);
+                }
+            }
+
+            // Render book list
+            renderBooks(booksToRender = this.books) {
+                const booksList = document.getElementById('books-list');
+
+                if (booksToRender.length === 0) {
+                    booksList.innerHTML = `
+                        <li class="empty-message" role="status">
+                            ${this.books.length === 0
+                                ? 'No books in library. Add your first book using the form above.'
+                                : 'No books found matching the search.'}
+                        </li>
+                    `;
+                } else {
+                    booksList.innerHTML = booksToRender.map(book => `
+                        <li class="book-item" role="listitem">
+                            <div class="book-info">
+                                <div class="book-title">${this.escapeHtml(book.title)}</div>
+                                <div class="book-author">by ${this.escapeHtml(book.author)}</div>
+                                <div class="book-year">
+                                    Year: ${book.year} | Genre: ${this.escapeHtml(book.genre)}
+                                </div>
+                            </div>
+                            <button
+                                class="btn-delete"
+                                onclick="bookManager.deleteBook(${book.id})"
+                                aria-label="Delete book ${this.escapeHtml(book.title)}"
+                            >
+                                Delete
+                            </button>
+                        </li>
+                    `).join('');
+                }
+
+                this.updateStats();
+            }
+
+            // Update statistics
+            updateStats() {
+                const statsText = document.getElementById('stats-text');
+                const count = this.books.length;
+
+                if (count === 0) {
+                    statsText.textContent = 'No books in library';
+                } else if (count === 1) {
+                    statsText.textContent = '1 book in library';
+                } else {
+                    statsText.textContent = `${count} books in library`;
+                }
+            }
+
+            // Announcement for screen readers
+            announce(message) {
+                const announcer = document.getElementById('announcements');
+                announcer.textContent = message;
+
+                // Clear after 1 second
+                setTimeout(() => {
+                    announcer.textContent = '';
+                }, 1000);
+            }
+
+            // Escape HTML for security
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // Save books to localStorage
+            saveBooks() {
+                localStorage.setItem('library_books', JSON.stringify(this.books));
+            }
+
+            // Load books from localStorage
+            loadBooks() {
+                const saved = localStorage.getItem('library_books');
+                return saved ? JSON.parse(saved) : [];
+            }
+        }
+
+        // Initialize application
+        const bookManager = new BookManager();
+
+        // Support for keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K to focus on search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('search-input').focus();
+                bookManager.announce('Search field activated');
+            }
+
+            // Ctrl/Cmd + N to focus on form
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                document.getElementById('book-title').focus();
+                bookManager.announce('Add form activated');
+            }
+        });
+    </script>
+</body>
+</html>

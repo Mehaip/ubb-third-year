@@ -65,6 +65,7 @@ public class InPlaceStrategy implements ConvolutionStrategy {
                         sum += value * C[ki][kj];
                     }
                 }
+                
 
                 newLine[j] = sum;
             }
@@ -107,11 +108,11 @@ public class InPlaceStrategy implements ConvolutionStrategy {
                 int[][] lineBuffer = new int[k][m];
                 int[] newLine = new int[m];
 
-                // Process all rows uniformly (including borders)
+                
                 for (int i = threadStart; i < threadEnd; i++) {
-                    // Setup lineBuffer with the 3 rows needed for convolution
+                    
                     if (i == threadStart) { ///inceputul thread-ului
-                        // First row of this thread
+               
                         if (threadId == 0) { ///primul thread F[0], F[0], F[1]
                             System.arraycopy(topBorders[threadId], 0, lineBuffer[0], 0, m); 
                             System.arraycopy(F[i], 0, lineBuffer[1], 0, m);
@@ -153,7 +154,7 @@ public class InPlaceStrategy implements ConvolutionStrategy {
                         }
                     }
 
-                    // Now compute convolution for row i using lineBuffer
+                
                     for (int j = 0; j < m; j++) {
                         int sum = 0;
 
@@ -161,7 +162,6 @@ public class InPlaceStrategy implements ConvolutionStrategy {
                             for (int kj = 0; kj < k; kj++) {
                                 int fj = j + kj - halfK;
 
-                                // Clamp column index
                                 int clampedFj = fj;
                                 if (clampedFj < 0) clampedFj = 0;
                                 if (clampedFj >= m) clampedFj = m - 1;
@@ -173,7 +173,6 @@ public class InPlaceStrategy implements ConvolutionStrategy {
                         newLine[j] = sum;
                     }
 
-                    // Write result back to F
                     System.arraycopy(newLine, 0, F[i], 0, m);
                 }
 

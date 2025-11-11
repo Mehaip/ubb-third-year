@@ -235,6 +235,7 @@ class Lexer:
             
             # Unknown character
             self.tokens.append(Token(TokenType.UNKNOWN, char, start_line, start_col))
+            print("UNKNOWN CHARACTER GASIT!: COD INVALID\n")
             self.advance()
         
         # Add EOF

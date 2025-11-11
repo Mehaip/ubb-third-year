@@ -10,6 +10,7 @@ int main(){
     d = 0x132ABC;
     e = 0123567;
     f = 0b01010101;
+    _ident = 0B1;
     cout << a + b;
     
 }

@@ -297,10 +297,10 @@ void applyConvolutionInPlaceParallel(ConvolutionData& data, int numThreads) {
             int k = data.k;
             int halfK = k / 2;
 
-            // Save top row
+            //SALVAM RAND SUS
             std::copy(data.F[threadStart].begin(), data.F[threadStart].end(), topBorders[threadId].begin());
 
-            // Save bottom row
+            // SALVAM RAND JOS
             std::copy(data.F[threadEnd - 1].begin(), data.F[threadEnd - 1].end(), bottomBorders[threadId].begin());
 
             // Wait for all threads to save their borders
@@ -355,7 +355,7 @@ void applyConvolutionInPlaceParallel(ConvolutionData& data, int numThreads) {
                         std::copy(data.F[i+1].begin(), data.F[i+1].end(), lineBuffer[2].begin());
                     }
                 }
-                // Now compute convolution for row i using lineBuffer
+                // FACEM CONVOLUTIA
                     for (int j = 0; j < m; j++) {
                         int sum = 0;
 
@@ -363,7 +363,7 @@ void applyConvolutionInPlaceParallel(ConvolutionData& data, int numThreads) {
                             for (int kj = 0; kj < k; kj++) {
                                 int fj = j + kj - halfK;
 
-                                // Clamp column index
+                       
                                 int clampedFj = fj;
                                 if (clampedFj < 0) clampedFj = 0;
                                 if (clampedFj >= m) clampedFj = m - 1;
