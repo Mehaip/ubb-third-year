@@ -21,7 +21,7 @@ boolean_operator ("=="|"!="|">"|">="|"<"|"<=")
 type ("int"|"bool"|"double")
 number {digit}+
 double_number {number}\.{number}
-identifier {letter}({letter}|{digit}|_)*
+identifier (_|{letter})({letter}|{digit}|_)*
 
 term ({identifier}|{number}|{double_number})
 
@@ -89,7 +89,7 @@ int element_in_ts_list(char* text){
 
 int main(int argc, char **argv){
     fout = fopen("data/fip.csv", "w");
-    fout_ts = fopen("data/ts.csv", "w");
+    fout_ts = fopen("data/ts.txt", "w");
     if (!fout) {
         fprintf(stderr, "Error: Cannot open output file data/fip.csv\n");
         return 1;

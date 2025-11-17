@@ -437,7 +437,7 @@ static const flex_int16_t yy_def[67] =
 static const flex_int16_t yy_nxt[124] =
     {   0,
         4,    5,    6,    5,    7,    8,    9,   10,   11,   12,
-        4,   13,   14,   15,   16,   17,   18,    4,   18,   19,
+        4,   13,   14,   15,   16,   17,   18,   18,   18,   19,
        18,   20,   18,   18,   21,   18,   18,   18,   18,   18,
        18,   18,   22,   23,   24,   25,   30,   25,   28,   29,
        25,   64,   25,   28,   29,   63,   62,   61,   60,   59,
@@ -484,9 +484,9 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "analizor_lexical.flex"
+#line 1 "analizor_lexical.l"
 /*DECLARATIONS*/
-#line 4 "analizor_lexical.flex"
+#line 4 "analizor_lexical.l"
     int num_lines = 1;
     #include <stdio.h>
     #include <string.h>
@@ -716,7 +716,7 @@ YY_DECL
 		}
 
 	{
-#line 30 "analizor_lexical.flex"
+#line 30 "analizor_lexical.l"
 
 
 #line 723 "build/lex.yy.c"
@@ -779,27 +779,27 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 32 "analizor_lexical.flex"
+#line 32 "analizor_lexical.l"
 {++num_lines;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 33 "analizor_lexical.flex"
+#line 33 "analizor_lexical.l"
 {fprintf(fout, "USING_STATEMENT,,%d\n", num_lines);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 34 "analizor_lexical.flex"
+#line 34 "analizor_lexical.l"
 {fprintf(fout, "INCLUDE_STATEMENT,,%d\n", num_lines);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 36 "analizor_lexical.flex"
+#line 36 "analizor_lexical.l"
 {fprintf(fout, "TYPE,%s,%d\n", yytext, num_lines);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 38 "analizor_lexical.flex"
+#line 38 "analizor_lexical.l"
 {
     int pos = element_in_ts_list(yytext);
     if(pos == -1) {
@@ -812,7 +812,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 48 "analizor_lexical.flex"
+#line 48 "analizor_lexical.l"
 {
     int pos = element_in_ts_list(yytext);
     if(pos == -1) {
@@ -825,17 +825,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 58 "analizor_lexical.flex"
+#line 58 "analizor_lexical.l"
 {fprintf(fout, "BOOL OPERATOR,%s,%d\n", yytext, num_lines);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 59 "analizor_lexical.flex"
+#line 59 "analizor_lexical.l"
 {fprintf(fout, "OPERATOR,%s,%d\n", yytext, num_lines);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 61 "analizor_lexical.flex"
+#line 61 "analizor_lexical.l"
 {
     int pos = element_in_ts_list(yytext);
     if(pos == -1) {
@@ -848,47 +848,47 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 71 "analizor_lexical.flex"
+#line 71 "analizor_lexical.l"
 {fprintf(fout, "LEFT PARAN,(,%d\n", num_lines);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 72 "analizor_lexical.flex"
+#line 72 "analizor_lexical.l"
 {fprintf(fout, "RIGHT PARAN,),%d\n", num_lines);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 73 "analizor_lexical.flex"
+#line 73 "analizor_lexical.l"
 {fprintf(fout, "LEFT BRACE,{,%d\n", num_lines);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 74 "analizor_lexical.flex"
+#line 74 "analizor_lexical.l"
 {fprintf(fout, "RIGHT BRACE,},%d\n", num_lines);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 75 "analizor_lexical.flex"
+#line 75 "analizor_lexical.l"
 {fprintf(fout, "COMMA,comma_symbol,%d\n", num_lines);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 76 "analizor_lexical.flex"
+#line 76 "analizor_lexical.l"
 {fprintf(fout, "SEMI COLON,;,%d\n",num_lines);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 78 "analizor_lexical.flex"
+#line 78 "analizor_lexical.l"
 ;  
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 79 "analizor_lexical.flex"
+#line 79 "analizor_lexical.l"
 {fprintf(fout, "UNIDENTIFIED,%s,%d\n", yytext, num_lines);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 81 "analizor_lexical.flex"
+#line 81 "analizor_lexical.l"
 ECHO;
 	YY_BREAK
 #line 895 "build/lex.yy.c"
@@ -1896,7 +1896,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 81 "analizor_lexical.flex"
+#line 81 "analizor_lexical.l"
 
 
 int element_in_ts_list(char* text){
@@ -1908,7 +1908,7 @@ int element_in_ts_list(char* text){
 
 int main(int argc, char **argv){
     fout = fopen("data/fip.csv", "w");
-    fout_ts = fopen("data/ts.csv", "w");
+    fout_ts = fopen("data/ts.txt", "w");
     if (!fout) {
         fprintf(stderr, "Error: Cannot open output file data/fip.csv\n");
         return 1;
@@ -1935,11 +1935,10 @@ int main(int argc, char **argv){
     
     yylex();
     
-    // Write symbol table at the end
     fprintf(fout_ts, "Position,Value\n");
     for(int i = 0; i < elemente_ts_count; i++){
         fprintf(fout_ts, "%d,%s\n", i, elemente_ts[i]);
-        free(elemente_ts[i]);  // Free allocated memory
+        free(elemente_ts[i]);  // free allocated memory
     }
     
     fprintf(fout, "EOF\n");
