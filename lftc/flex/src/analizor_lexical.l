@@ -5,6 +5,7 @@
     #include <stdio.h>
     #include <string.h>
     #include <stdlib.h>
+
     
     FILE *fout;
     FILE *fout_ts;
@@ -34,6 +35,37 @@ term ({identifier}|{number}|{double_number})
 "#include" {fprintf(fout, "INCLUDE_STATEMENT,,%d\n", num_lines);}
 
 {type} {fprintf(fout, "TYPE,%s,%d\n", yytext, num_lines);}
+
+0[xX][0-9a-fA-F]+ {
+    fprintf(fout, "HEXA,%s,%d\n", yytext, num_lines);
+    int pos = element_in_ts_list(yytext);
+    if(pos == - 1){
+        elemente_ts[elemente_ts_count] = strdup(yytext);
+        pos = elemente_ts_count;
+        elemente_ts_count++;
+    }
+}
+
+0[bB][01]+ {
+    fprintf(fout, "BINARY,%s,%d\n", yytext, num_lines);
+    int pos = element_in_ts_list(yytext);
+    if(pos == - 1){
+        elemente_ts[elemente_ts_count] = strdup(yytext);
+        pos = elemente_ts_count;
+        elemente_ts_count++;
+    }
+}
+
+0[1-9][0-9]+ {
+    fprintf(fout, "OCTAL,%s,%d\n", yytext, num_lines);
+    int pos = element_in_ts_list(yytext);
+    if(pos == - 1){
+        elemente_ts[elemente_ts_count] = strdup(yytext);
+        pos = elemente_ts_count;
+        elemente_ts_count++;
+    }
+}
+
 
 {double_number} {
     int pos = element_in_ts_list(yytext);
@@ -115,6 +147,8 @@ int main(int argc, char **argv){
     }
     
     yylex();
+    
+    BinaryTreeNode* root = new
     
     fprintf(fout_ts, "Position,Value\n");
     for(int i = 0; i < elemente_ts_count; i++){
