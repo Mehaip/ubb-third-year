@@ -812,12 +812,12 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 29 "src/analizor_lexical.l"
-{fprintf(fout, "USING_STATEMENT,,%d\n", num_lines);}
+{fprintf(fout, "USING_STATEMENT,%s,%d\n", yytext,num_lines);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 30 "src/analizor_lexical.l"
-{fprintf(fout, "INCLUDE_STATEMENT,,%d\n", num_lines);}
+{fprintf(fout, "INCLUDE_STATEMENT,%s,%d\n", yytext,num_lines);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP

@@ -1,9 +1,9 @@
 Atom lexical,Value,Line,Pozitie in TS
-INCLUDE_STATEMENT,,1
+INCLUDE_STATEMENT,#include,1
 BOOL OPERATOR,<,1
 IDENTIFIER,iostream,1,0
 BOOL OPERATOR,>,1
-USING_STATEMENT,,3
+USING_STATEMENT,using namespace std;,3
 TYPE,int,5
 IDENTIFIER,main,5,1
 LEFT PARAN,(,5
