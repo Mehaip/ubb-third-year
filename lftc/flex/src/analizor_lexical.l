@@ -26,8 +26,8 @@ term ({identifier}|{number}|{double_number})
 %%
 
 \n  {++num_lines;}
-"using namespace std;" {fprintf(fout, "USING_STATEMENT,,%d\n", num_lines);}
-"#include" {fprintf(fout, "INCLUDE_STATEMENT,,%d\n", num_lines);}
+"using namespace std;" {fprintf(fout, "USING_STATEMENT,%s,%d\n", yytext,num_lines);}
+"#include" {fprintf(fout, "INCLUDE_STATEMENT,%s,%d\n", yytext,num_lines);}
 
 
 
