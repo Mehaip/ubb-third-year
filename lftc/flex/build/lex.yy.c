@@ -495,22 +495,18 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "analizor_lexical.l"
+#line 1 "src/analizor_lexical.l"
 /*DECLARATIONS*/
-#line 4 "analizor_lexical.l"
-    int num_lines = 1;
+#line 4 "src/analizor_lexical.l"
     #include <stdio.h>
     #include <string.h>
     #include <stdlib.h>
-    
-    FILE *fout;
-    FILE *fout_ts;
-    char *elemente_ts[100];  
-    int elemente_ts_count = 0;
-#line 511 "build/lex.yy.c"
+    #include "bst.h"
+    #include "globals.h"
+#line 507 "build/lex.yy.c"
 /*identifiers/numbers*/
 /*RULES*/
-#line 514 "build/lex.yy.c"
+#line 510 "build/lex.yy.c"
 
 #define INITIAL 0
 
@@ -727,10 +723,10 @@ YY_DECL
 		}
 
 	{
-#line 30 "analizor_lexical.l"
+#line 26 "src/analizor_lexical.l"
 
 
-#line 734 "build/lex.yy.c"
+#line 730 "build/lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -790,158 +786,180 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 32 "analizor_lexical.l"
+#line 28 "src/analizor_lexical.l"
 {++num_lines;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 33 "analizor_lexical.l"
+#line 29 "src/analizor_lexical.l"
 {fprintf(fout, "USING_STATEMENT,,%d\n", num_lines);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 34 "analizor_lexical.l"
+#line 30 "src/analizor_lexical.l"
 {fprintf(fout, "INCLUDE_STATEMENT,,%d\n", num_lines);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 36 "analizor_lexical.l"
+#line 32 "src/analizor_lexical.l"
 {fprintf(fout, "TYPE,%s,%d\n", yytext, num_lines);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 38 "analizor_lexical.l"
+#line 34 "src/analizor_lexical.l"
 {
-    fprintf(fout, "HEXA,%s,%d\n", yytext, num_lines);
-    int pos = element_in_ts_list(yytext);
-    if(pos == - 1){
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode *found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(found==NULL){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
+    
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 48 "analizor_lexical.l"
+#line 46 "src/analizor_lexical.l"
 {
-    fprintf(fout, "BINARY,%s,%d\n", yytext, num_lines);
-    int pos = element_in_ts_list(yytext);
-    if(pos == - 1){
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
+    fprintf(fout, "HEXA,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 58 "analizor_lexical.l"
+#line 60 "src/analizor_lexical.l"
 {
-    fprintf(fout, "OCTAL,%s,%d\n", yytext, num_lines);
-    int pos = element_in_ts_list(yytext);
-    if(pos == - 1){
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+        int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
+    fprintf(fout, "OCTAL,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 69 "analizor_lexical.l"
+#line 75 "src/analizor_lexical.l"
 {
-    int pos = element_in_ts_list(yytext);
-    if(pos == -1) {
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
     fprintf(fout, "DOUBLE,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 79 "analizor_lexical.l"
+#line 89 "src/analizor_lexical.l"
 {
-    int pos = element_in_ts_list(yytext);
-    if(pos == -1) {
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
     fprintf(fout, "INTEGER,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 89 "analizor_lexical.l"
+#line 103 "src/analizor_lexical.l"
 {fprintf(fout, "BOOL OPERATOR,%s,%d\n", yytext, num_lines);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 90 "analizor_lexical.l"
+#line 104 "src/analizor_lexical.l"
 {fprintf(fout, "OPERATOR,%s,%d\n", yytext, num_lines);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 92 "analizor_lexical.l"
+#line 106 "src/analizor_lexical.l"
 {
-    int pos = element_in_ts_list(yytext);
-    if(pos == -1) {
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
     fprintf(fout, "IDENTIFIER,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 102 "analizor_lexical.l"
+#line 120 "src/analizor_lexical.l"
 {fprintf(fout, "LEFT PARAN,(,%d\n", num_lines);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 103 "analizor_lexical.l"
+#line 121 "src/analizor_lexical.l"
 {fprintf(fout, "RIGHT PARAN,),%d\n", num_lines);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 104 "analizor_lexical.l"
+#line 122 "src/analizor_lexical.l"
 {fprintf(fout, "LEFT BRACE,{,%d\n", num_lines);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 105 "analizor_lexical.l"
+#line 123 "src/analizor_lexical.l"
 {fprintf(fout, "RIGHT BRACE,},%d\n", num_lines);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 106 "analizor_lexical.l"
+#line 124 "src/analizor_lexical.l"
 {fprintf(fout, "COMMA,comma_symbol,%d\n", num_lines);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 107 "analizor_lexical.l"
+#line 125 "src/analizor_lexical.l"
 {fprintf(fout, "SEMI COLON,;,%d\n",num_lines);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 109 "analizor_lexical.l"
+#line 127 "src/analizor_lexical.l"
 ;  
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 110 "analizor_lexical.l"
+#line 128 "src/analizor_lexical.l"
 {fprintf(fout, "UNIDENTIFIED,%s,%d\n", yytext, num_lines);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 112 "analizor_lexical.l"
+#line 130 "src/analizor_lexical.l"
 ECHO;
 	YY_BREAK
-#line 945 "build/lex.yy.c"
+#line 963 "build/lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1946,56 +1964,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 112 "analizor_lexical.l"
+#line 130 "src/analizor_lexical.l"
 
-
-int element_in_ts_list(char* text){
-    for(int i = 0; i < elemente_ts_count; i++)
-        if(strcmp(elemente_ts[i], text) == 0) 
-            return i;
-    return -1;
-}
-
-int main(int argc, char **argv){
-    fout = fopen("data/fip.csv", "w");
-    fout_ts = fopen("data/ts.txt", "w");
-    if (!fout) {
-        fprintf(stderr, "Error: Cannot open output file data/fip.csv\n");
-        return 1;
-    }
-    if (!fout_ts) {
-        fprintf(stderr, "Error: Cannot open output file data/ts.txt\n");
-        fclose(fout);
-        return 1;
-    }
-
-    fprintf(fout, "Atom lexical,Value,Line,Pozitie in TS\n");
-
-    if (argc > 1){
-        FILE *fp = fopen(argv[1], "r");
-        if(fp)
-            yyin = fp;
-        else {
-            fprintf(stderr, "Error: Cannot open input file %s\n", argv[1]);
-            fclose(fout);
-            fclose(fout_ts);
-            return 1;
-        }
-    }
-    
-    yylex();
-    
-    fprintf(fout_ts, "Position,Value\n");
-    for(int i = 0; i < elemente_ts_count; i++){
-        fprintf(fout_ts, "%d,%s\n", i, elemente_ts[i]);
-        free(elemente_ts[i]);  // free allocated memory
-    }
-    
-    fprintf(fout, "EOF\n");
-    fclose(fout);
-    fclose(fout_ts);
-    printf("Output written to data/fip.csv and data/ts.txt\n");
-    printf("Symbol table entries: %d\n", elemente_ts_count);
-    
-    return 0;
-}

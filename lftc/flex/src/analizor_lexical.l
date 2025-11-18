@@ -1,16 +1,11 @@
 /*DECLARATIONS*/
 
 %{
-    int num_lines = 1;
     #include <stdio.h>
     #include <string.h>
     #include <stdlib.h>
-
-    
-    FILE *fout;
-    FILE *fout_ts;
-    char *elemente_ts[100];  
-    int elemente_ts_count = 0;
+    #include "bst.h"
+    #include "globals.h"
 %}
 
 letter [a-zA-Z]
@@ -37,67 +32,89 @@ term ({identifier}|{number}|{double_number})
 {type} {fprintf(fout, "TYPE,%s,%d\n", yytext, num_lines);}
 
 0[xX][0-9a-fA-F]+ {
-    fprintf(fout, "HEXA,%s,%d\n", yytext, num_lines);
-    int pos = element_in_ts_list(yytext);
-    if(pos == - 1){
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode *found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(found==NULL){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
+    
 }
 
 0[bB][01]+ {
-    fprintf(fout, "BINARY,%s,%d\n", yytext, num_lines);
-    int pos = element_in_ts_list(yytext);
-    if(pos == - 1){
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
+    fprintf(fout, "HEXA,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 
 0[1-9][0-9]+ {
-    fprintf(fout, "OCTAL,%s,%d\n", yytext, num_lines);
-    int pos = element_in_ts_list(yytext);
-    if(pos == - 1){
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+        int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
+    fprintf(fout, "OCTAL,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 
 
 {double_number} {
-    int pos = element_in_ts_list(yytext);
-    if(pos == -1) {
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
     fprintf(fout, "DOUBLE,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 
 {number} {
-    int pos = element_in_ts_list(yytext);
-    if(pos == -1) {
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
     fprintf(fout, "INTEGER,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 
 {boolean_operator} {fprintf(fout, "BOOL OPERATOR,%s,%d\n", yytext, num_lines);}
 {operator} {fprintf(fout, "OPERATOR,%s,%d\n", yytext, num_lines);}
 
 {identifier} {
-    int pos = element_in_ts_list(yytext);
-    if(pos == -1) {
-        elemente_ts[elemente_ts_count] = strdup(yytext);
-        pos = elemente_ts_count;
-        elemente_ts_count++;
+    struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
+    int pos;
+    if(!found){
+        tabel_simboluri = insertNode(tabel_simboluri, yytext, &next_position);
+        pos = next_position - 1;
+    } else {
+        pos = found->position;
     }
     fprintf(fout, "IDENTIFIER,%s,%d,%d\n", yytext, num_lines, pos);
+
+
 }
 
 "(" {fprintf(fout, "LEFT PARAN,(,%d\n", num_lines);}
@@ -111,56 +128,3 @@ term ({identifier}|{number}|{double_number})
 . {fprintf(fout, "UNIDENTIFIED,%s,%d\n", yytext, num_lines);}
 
 %%
-
-int element_in_ts_list(char* text){
-    for(int i = 0; i < elemente_ts_count; i++)
-        if(strcmp(elemente_ts[i], text) == 0) 
-            return i;
-    return -1;
-}
-
-int main(int argc, char **argv){
-    fout = fopen("data/fip.csv", "w");
-    fout_ts = fopen("data/ts.txt", "w");
-    if (!fout) {
-        fprintf(stderr, "Error: Cannot open output file data/fip.csv\n");
-        return 1;
-    }
-    if (!fout_ts) {
-        fprintf(stderr, "Error: Cannot open output file data/ts.txt\n");
-        fclose(fout);
-        return 1;
-    }
-
-    fprintf(fout, "Atom lexical,Value,Line,Pozitie in TS\n");
-
-    if (argc > 1){
-        FILE *fp = fopen(argv[1], "r");
-        if(fp)
-            yyin = fp;
-        else {
-            fprintf(stderr, "Error: Cannot open input file %s\n", argv[1]);
-            fclose(fout);
-            fclose(fout_ts);
-            return 1;
-        }
-    }
-    
-    yylex();
-    
-    BinaryTreeNode* root = new
-    
-    fprintf(fout_ts, "Position,Value\n");
-    for(int i = 0; i < elemente_ts_count; i++){
-        fprintf(fout_ts, "%d,%s\n", i, elemente_ts[i]);
-        free(elemente_ts[i]);  // free allocated memory
-    }
-    
-    fprintf(fout, "EOF\n");
-    fclose(fout);
-    fclose(fout_ts);
-    printf("Output written to data/fip.csv and data/ts.txt\n");
-    printf("Symbol table entries: %d\n", elemente_ts_count);
-    
-    return 0;
-}
