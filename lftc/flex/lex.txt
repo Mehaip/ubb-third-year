@@ -1,0 +1,11 @@
+yyin este de tip FILE* si pointeaza catre input file
+
+yytext is of type char* and it contains the lexeme currently found. 
+A lexeme is a sequence of characters in the input stream that matches some pattern in the Rules Section. 
+(In fact, it is the first matching sequence in the input from the position pointed to by yyin.)
+ Each invocation of the function yylex() results in yytext carrying a pointer to the lexeme found in the input stream by yylex(). 
+The value of yytext will be overwritten after the next yylex() invocation.
+
+yylex()
+yylex() continues scanning the input till one of the
+ actions corresponding to a matched pattern executes a return statement or till the end of input has been encountered.

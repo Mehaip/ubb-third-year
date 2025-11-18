@@ -5,6 +5,10 @@
 
 extern FILE *yyin; //fisierul din care va fi citit textul
 
+int yywrap(){
+    return 1;
+}
+
 int main(int argc, char **argv){
     fout = fopen("data/fip.csv", "w");
     fout_ts = fopen("data/ts.csv", "w");
