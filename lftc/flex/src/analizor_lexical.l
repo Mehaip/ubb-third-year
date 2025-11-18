@@ -29,6 +29,8 @@ term ({identifier}|{number}|{double_number})
 "using namespace std;" {fprintf(fout, "USING_STATEMENT,,%d\n", num_lines);}
 "#include" {fprintf(fout, "INCLUDE_STATEMENT,,%d\n", num_lines);}
 
+
+
 {type} {fprintf(fout, "TYPE,%s,%d\n", yytext, num_lines);}
 
 0[xX][0-9a-fA-F]+ {
@@ -57,7 +59,7 @@ term ({identifier}|{number}|{double_number})
 
 }
 
-0[1-9][0-9]+ {
+0[1-7][0-7]+ {
     struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
         int pos;
     if(!found){
@@ -86,7 +88,7 @@ term ({identifier}|{number}|{double_number})
 
 }
 
-{number} {
+{number}[ ] {
     struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
     int pos;
     if(!found){
@@ -125,6 +127,12 @@ term ({identifier}|{number}|{double_number})
 ";" {fprintf(fout, "SEMI COLON,;,%d\n",num_lines);}
 
 [ \t]+ ;  
+0[1-7]*[8-9][1,7]* {fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);}
+\<\<\<+ {fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);}
+\>\>\>+ {fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);}
+{number}{identifier} {fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);}
+{number}[.] {fprintf(fout, "EROARE,%s,%d\n",yytext, num_lines);}
+[.]{number} {fprintf(fout, "EROARE,%s,%d\n",yytext, num_lines);}
 . {fprintf(fout, "UNIDENTIFIED,%s,%d\n", yytext, num_lines);}
 
 %%

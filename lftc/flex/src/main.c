@@ -3,7 +3,7 @@
 #include "bst.h"
 #include "globals.h"
 
-extern FILE *yyin;
+extern FILE *yyin; //fisierul din care va fi citit textul
 
 int main(int argc, char **argv){
     fout = fopen("data/fip.csv", "w");
