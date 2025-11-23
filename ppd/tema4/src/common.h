@@ -13,25 +13,23 @@ class Node{
 class LinkedList{
     private:
         Node* head;
+    
+    public:
+        LinkedList(){
+            head = nullptr;
+        }
         bool id_exists(Pair data){
             Node* temp = head;
             while(temp != nullptr){
                 if(temp->data.id == data.id){
-                    temp->data.grade += data.grade;
                     return true;
                 }
                 temp = temp->next;
             }
         return false;
         }
-    
-    public:
-        LinkedList(){
-            head = nullptr;
-        }
 
-        void addOrUpdateNode(Pair data){
-            if(!id_exists(data)){
+        void addNode(Pair data){
             Node* newNode = new Node(data);
             if (head == nullptr){
                 head = newNode;
@@ -41,9 +39,17 @@ class LinkedList{
                 while(temp->next!=nullptr)
                     temp = temp->next;
                 temp->next = newNode;
+        }
+        
+    }
+        void updateNode(Pair data){
+            Node* temp = head;
+            while(temp!=nullptr){
+                if(temp->data.id == data.id)
+                    temp->data.grade += data.grade;
+                temp=temp->next;
             }
         }
-    }
 
         void saveToFile(const std::string& filename){
             Node* temp = head;
