@@ -19,7 +19,6 @@ void worker_function(QueueMutex *data_queue, LinkedList *student_list){
     while (true) {
         Pair data = data_queue->pop();
         if(data.id == -1) {
-            printf("worker got posion pill\n");///poison pill
             break;
         }
         student_list->addOrUpdate(data);
