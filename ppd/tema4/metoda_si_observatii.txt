@@ -1,0 +1,41 @@
+========== RESULTS ==========
+
+Sequential average: 2.14 ms
+
+    Config  Avg Time (ms)        Speedup
+----------------------------------------
+   p=4,r=1           4.77           0.45x
+   p=8,r=1           4.73           0.45x
+  p=16,r=1           6.77           0.32x
+   p=4,r=2           3.61           0.59x
+   p=8,r=2           4.93           0.43x
+  p=16,r=2           7.75           0.28x
+
+  Fiind o dimensiune asa mica la fisier, e normal ca sequential sa aibe un timp mai mare.
+  p=4, r=2 are cel mai bun rezultat, deoarece sunt 2 readeri si 2 workeri. Un numar mai mare de workeri, precum in cazul 
+  p=16 (care are cei mai slabi timpi) este inutil, doarece este cazul in care sunt mai multi care asteapta, decat mai multi care lucreaza
+  2 este un numar bun de workeri deoarece se asigura faptul ca in mod constant, ambii au date cu care sa lucreze.
+
+
+
+  =======
+  METODA DE REZOLVARE PARALELA
+
+
+  Problema este urmatoarea in aceasta tema:
+  Ni se dau 10 fisiere .txt care contin date despre notele elevilor. Per fisier, avem intre 80 si 200 de date despre studenti.
+  Datele sunt sub forma id,nota. Scopul acestei teme este sa vedem suma notelor fiecarui id, cautand in fiecare fisier.
+  Astfel, implementam rezolvarea paralela.
+
+Pasul 1:
+Citim fisierele folosind reader:
+Un reader va citi 10/number_of_readers fisiere.
+Adica, daca sunt 2 readeri: reader1: 1-5, reader2: 6-10.
+Acestia vor citi in paralel fisierele si vor pune datele intr-un queue.
+Totodata, in timp ce sunt puse in queue datele despre studenti, workerii asteapta semnalul de 
+la semafor. Semnalul este dat in instructiunea push. Cand se da push la date, deja sunt
+workerii care asteapta semnalul. Astfel cand se da push, deja este un worker care da pop
+la data din queue si le proceseaza. Prin "proceseaza", ma refer ca fie adauga un nod nou,
+fie il cauta si ii adauga la grade.
+Astfel, datele se citesc si se proceseaza deodata, spre deosebire de secvential, unde
+se citesc si abia apoi se proceseaza.

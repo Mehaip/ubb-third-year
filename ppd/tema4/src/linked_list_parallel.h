@@ -1,7 +1,8 @@
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef LINKED_LIST_PARALLEL_H
+#define LINKED_LIST_PARALLEL_H
 #include "parser.h"
+#include <mutex>
 #include <fstream>
 class Node{
     public:
@@ -13,42 +14,36 @@ class Node{
 class LinkedList{
     private:
         Node* head;
+        std::mutex mtx;
     
     public:
         LinkedList(){
             head = nullptr;
         }
-        bool id_exists(Pair data){
+        
+        void addOrUpdate(Pair data){
+            mtx.lock();
             Node* temp = head;
-            while(temp != nullptr){
-                if(temp->data.id == data.id){
-                    return true;
+            while(temp != nullptr){ 
+                if(temp->data.id == data.id){ ///nodul se afla in lista
+                    temp->data.grade += data.grade;
+                    mtx.unlock();
+                    return;
                 }
                 temp = temp->next;
             }
-        return false;
-        }
-
-        void addNode(Pair data){
             Node* newNode = new Node(data);
-            if (head == nullptr){
+            if(head == nullptr){
                 head = newNode;
-            }
-            else{
-                Node* temp = head;
-                while(temp->next!=nullptr)
-                    temp = temp->next;
-                temp->next = newNode;
-        }
-        
-    }
-        void updateNode(Pair data){
+            } else {
             Node* temp = head;
-            while(temp!=nullptr){
-                if(temp->data.id == data.id)
-                    temp->data.grade += data.grade;
-                temp=temp->next;
+            while(temp->next != nullptr){
+                temp = temp->next;
             }
+            temp->next = newNode;  ///temp->next = temp
+        }
+            mtx.unlock();
+
         }
 
         void saveToFile(const std::string& filename){
