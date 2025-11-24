@@ -4,6 +4,7 @@
 #include "globals.h"
 
 extern FILE *yyin; //fisierul din care va fi citit textul
+extern int yylex(void);
 
 int yywrap(){
     return 1;
