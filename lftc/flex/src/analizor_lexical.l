@@ -8,7 +8,8 @@
     #include "globals.h"
     #include "parser.tab.h"
 %}
-
+/*pt line count*/
+%option yylineno
 letter [a-zA-Z]
 digit [0-9]
 operator [+\-*/%]
@@ -149,7 +150,7 @@ identifier (_|{letter})({letter}|{digit}|_)*
 }
 
 
-{number}[ ] {
+{number} {
     struct BinaryTreeNode* found = searchNode(tabel_simboluri, yytext);
     int pos;
     if(!found){
@@ -184,13 +185,41 @@ identifier (_|{letter})({letter}|{digit}|_)*
 
 }
 
-[ \t]+ ;  
-0[1-7]*[8-9][1,7]* {fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);}
-\<\<\<+ {fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);}
-\>\>\>+ {fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);}
-{number}{identifier} {fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);}
-{number}[.] {fprintf(fout, "EROARE,%s,%d\n",yytext, num_lines);}
-[.]{number} {fprintf(fout, "EROARE,%s,%d\n",yytext, num_lines);}
-. {fprintf(fout, "UNIDENTIFIED,%s,%d\n", yytext, num_lines);}
+[ \t]+ ;
+0[1-7]*[8-9][1,7]* {
+    fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);
+    fprintf(stderr, "Lexical error: invalid octal number '%s'\n", yytext);
+    return ERROR;
+}
+\<\<\<+ {
+    fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);
+    fprintf(stderr, "Lexical error: invalid shift operator '%s'\n", yytext);
+    return ERROR;
+}
+\>\>\>+ {
+    fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);
+    fprintf(stderr, "Lexical error: invalid shift operator '%s'\n", yytext);
+    return ERROR;
+}
+{number}{identifier} {
+    fprintf(fout, "EROARE,%s,%d\n", yytext, num_lines);
+    fprintf(stderr, "Lexical error: invalid token '%s'\n", yytext);
+    return ERROR;
+}
+{number}[.] {
+    fprintf(fout, "EROARE,%s,%d\n",yytext, num_lines);
+    fprintf(stderr, "Lexical error: invalid number '%s'\n", yytext);
+    return ERROR;
+}
+[.]{number} {
+    fprintf(fout, "EROARE,%s,%d\n",yytext, num_lines);
+    fprintf(stderr, "Lexical error: invalid number '%s'\n", yytext);
+    return ERROR;
+}
+. {
+    fprintf(fout, "UNIDENTIFIED,%s,%d\n", yytext, num_lines);
+    fprintf(stderr, "Lexical error: unidentified token '%s'\n", yytext);
+    return ERROR;
+}
 
 %%

@@ -1,3 +1,7 @@
+#include <iostream>
+
+using namespace std;
+int main(){
 0xG5
 0x
 0b12
@@ -7,3 +11,4 @@
 123abc
 cout <<<<< a;
 cin >>>>>>>>>>>>>>>>>> b;
+}

@@ -1,3 +1,11 @@
-Atom lexical,Value,Line,Pozitie in TS
 INCLUDE_STATEMENT,#include,1
-EOF
+LESS_THAN,<,1
+IDENTIFIER,iostream,1,0
+GREATER_THAN,>,1
+USING_STATEMENT,using namespace std;,3
+TYPE,int,4
+IDENTIFIER,main,4,1
+LEFT PARAN,(,4
+RIGHT PARAN,),4
+LEFT BRACE,{,4
+EROARE,0xG5,5

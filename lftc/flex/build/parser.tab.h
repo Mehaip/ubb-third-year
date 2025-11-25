@@ -78,7 +78,8 @@ extern int yydebug;
     WRITE = 279,                   /* WRITE  */
     BOOLEAN_LITERAL = 280,         /* BOOLEAN_LITERAL  */
     SHIFT_LEFT = 281,              /* SHIFT_LEFT  */
-    SHIFT_RIGHT = 282              /* SHIFT_RIGHT  */
+    SHIFT_RIGHT = 282,             /* SHIFT_RIGHT  */
+    ERROR = 283                    /* ERROR  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif

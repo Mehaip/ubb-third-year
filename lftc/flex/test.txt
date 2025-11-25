@@ -10,7 +10,9 @@ int main(){
     d = 0x132ABC;
     e = 0123567;
     f = 0b01010101;
+    g = 10.10;
     _ident = 0B1;
-    cout << a + b;
+    cout << a + b + c + _ident;
+    a = 10;
     
 }

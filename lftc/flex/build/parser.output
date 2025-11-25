@@ -1,0 +1,1030 @@
+Grammar
+
+    0 $accept: program $end
+
+    1 program: include_list using_statement function_list
+
+    2 include_list: ε
+    3             | include_file include_list
+
+    4 using_statement: ε
+    5                | USING_NAMESPACE
+
+    6 include_file: INCLUDE SMALLER_THAN IDENTIFIER GREATER_THAN
+
+    7 function_definition: TYPE IDENTIFIER L_PAR parameter_list R_PAR statement_block
+
+    8 function_list: function_definition
+    9              | function_definition function_list
+
+   10 parameter: TYPE IDENTIFIER
+
+   11 parameter_list: ε
+   12               | non_empty_parameter_list
+
+   13 non_empty_parameter_list: parameter
+   14                         | parameter COMMA non_empty_parameter_list
+
+   15 statement_block: L_BRACE statement_list R_BRACE
+
+   16 statement_list: ε
+   17               | statement statement_list
+
+   18 statement: variable_declaration SEMI_COLON
+   19          | expression_statement SEMI_COLON
+   20          | return_statement SEMI_COLON
+   21          | if_statement
+   22          | while_statement
+   23          | read_statement SEMI_COLON
+   24          | print_statement SEMI_COLON
+
+   25 variable_declaration: TYPE IDENTIFIER variable_value_assignation variable_declaration_enumeration
+
+   26 variable_value_assignation: ε
+   27                           | EQUAL arithmetic_expression
+
+   28 variable_declaration_enumeration: ε
+   29                                 | COMMA IDENTIFIER variable_value_assignation variable_declaration_enumeration
+
+   30 expression_statement: ε
+   31                     | expression
+
+   32 return_statement: RETURN expression_statement
+
+   33 else_if_statement: ε
+   34                  | ELSE statement_block
+
+   35 if_statement: IF L_PAR boolean_expression R_PAR statement_block else_if_statement
+
+   36 while_statement: WHILE L_PAR boolean_expression R_PAR statement_block
+
+   37 read_statement: READ SHIFT_RIGHT IDENTIFIER
+
+   38 print_statement: WRITE SHIFT_LEFT IDENTIFIER
+
+   39 expression: term
+   40           | expression OPERATOR term
+   41           | expression BOOL_OPERATOR term
+
+   42 arithmetic_expression: term operator_usage
+
+   43 boolean_expression: term boolean_operator_usage
+
+   44 operator_usage: ε
+   45               | OPERATOR term operator_usage
+
+   46 boolean_operator_usage: ε
+   47                       | BOOL_OPERATOR term boolean_operator_usage
+
+   48 term: IDENTIFIER
+   49     | NUMBER
+   50     | BOOLEAN_LITERAL
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    NUMBER (258) 49
+    OPERATOR (259) 40 45
+    BOOL_OPERATOR (260) 41 47
+    IDENTIFIER (261) 6 7 10 25 29 37 38 48
+    INCLUDE (262) 6
+    USING_NAMESPACE (263) 5
+    GREATER_THAN (264) 6
+    SMALLER_THAN (265) 6
+    TYPE (266) 7 10 25
+    L_PAR (267) 7 35 36
+    R_PAR (268) 7 35 36
+    COMMA (269) 14 29
+    L_BRACE (270) 15
+    R_BRACE (271) 15
+    EQUAL (272) 27
+    SEMI_COLON (273) 18 19 20 23 24
+    RETURN (274) 32
+    IF (275) 35
+    ELSE (276) 34
+    WHILE (277) 36
+    READ (278) 37
+    WRITE (279) 38
+    BOOLEAN_LITERAL (280) 50
+    SHIFT_LEFT (281) 38
+    SHIFT_RIGHT (282) 37
+
+
+Nonterminals, with rules where they appear
+
+    $accept (28)
+        on left: 0
+    program (29)
+        on left: 1
+        on right: 0
+    include_list (30)
+        on left: 2 3
+        on right: 1 3
+    using_statement (31)
+        on left: 4 5
+        on right: 1
+    include_file (32)
+        on left: 6
+        on right: 3
+    function_definition (33)
+        on left: 7
+        on right: 8 9
+    function_list (34)
+        on left: 8 9
+        on right: 1 9
+    parameter (35)
+        on left: 10
+        on right: 13 14
+    parameter_list (36)
+        on left: 11 12
+        on right: 7
+    non_empty_parameter_list (37)
+        on left: 13 14
+        on right: 12 14
+    statement_block (38)
+        on left: 15
+        on right: 7 34 35 36
+    statement_list (39)
+        on left: 16 17
+        on right: 15 17
+    statement (40)
+        on left: 18 19 20 21 22 23 24
+        on right: 17
+    variable_declaration (41)
+        on left: 25
+        on right: 18
+    variable_value_assignation (42)
+        on left: 26 27
+        on right: 25 29
+    variable_declaration_enumeration (43)
+        on left: 28 29
+        on right: 25 29
+    expression_statement (44)
+        on left: 30 31
+        on right: 19 32
+    return_statement (45)
+        on left: 32
+        on right: 20
+    else_if_statement (46)
+        on left: 33 34
+        on right: 35
+    if_statement (47)
+        on left: 35
+        on right: 21
+    while_statement (48)
+        on left: 36
+        on right: 22
+    read_statement (49)
+        on left: 37
+        on right: 23
+    print_statement (50)
+        on left: 38
+        on right: 24
+    expression (51)
+        on left: 39 40 41
+        on right: 31 40 41
+    arithmetic_expression (52)
+        on left: 42
+        on right: 27
+    boolean_expression (53)
+        on left: 43
+        on right: 35 36
+    operator_usage (54)
+        on left: 44 45
+        on right: 42 45
+    boolean_operator_usage (55)
+        on left: 46 47
+        on right: 43 47
+    term (56)
+        on left: 48 49 50
+        on right: 39 40 41 42 43 45 47
+
+
+State 0
+
+    0 $accept: • program $end
+
+    INCLUDE  shift, and go to state 1
+
+    $default  reduce using rule 2 (include_list)
+
+    program       go to state 2
+    include_list  go to state 3
+    include_file  go to state 4
+
+
+State 1
+
+    6 include_file: INCLUDE • SMALLER_THAN IDENTIFIER GREATER_THAN
+
+    SMALLER_THAN  shift, and go to state 5
+
+
+State 2
+
+    0 $accept: program • $end
+
+    $end  shift, and go to state 6
+
+
+State 3
+
+    1 program: include_list • using_statement function_list
+
+    USING_NAMESPACE  shift, and go to state 7
+
+    $default  reduce using rule 4 (using_statement)
+
+    using_statement  go to state 8
+
+
+State 4
+
+    3 include_list: include_file • include_list
+
+    INCLUDE  shift, and go to state 1
+
+    $default  reduce using rule 2 (include_list)
+
+    include_list  go to state 9
+    include_file  go to state 4
+
+
+State 5
+
+    6 include_file: INCLUDE SMALLER_THAN • IDENTIFIER GREATER_THAN
+
+    IDENTIFIER  shift, and go to state 10
+
+
+State 6
+
+    0 $accept: program $end •
+
+    $default  accept
+
+
+State 7
+
+    5 using_statement: USING_NAMESPACE •
+
+    $default  reduce using rule 5 (using_statement)
+
+
+State 8
+
+    1 program: include_list using_statement • function_list
+
+    TYPE  shift, and go to state 11
+
+    function_definition  go to state 12
+    function_list        go to state 13
+
+
+State 9
+
+    3 include_list: include_file include_list •
+
+    $default  reduce using rule 3 (include_list)
+
+
+State 10
+
+    6 include_file: INCLUDE SMALLER_THAN IDENTIFIER • GREATER_THAN
+
+    GREATER_THAN  shift, and go to state 14
+
+
+State 11
+
+    7 function_definition: TYPE • IDENTIFIER L_PAR parameter_list R_PAR statement_block
+
+    IDENTIFIER  shift, and go to state 15
+
+
+State 12
+
+    8 function_list: function_definition •
+    9              | function_definition • function_list
+
+    TYPE  shift, and go to state 11
+
+    $default  reduce using rule 8 (function_list)
+
+    function_definition  go to state 12
+    function_list        go to state 16
+
+
+State 13
+
+    1 program: include_list using_statement function_list •
+
+    $default  reduce using rule 1 (program)
+
+
+State 14
+
+    6 include_file: INCLUDE SMALLER_THAN IDENTIFIER GREATER_THAN •
+
+    $default  reduce using rule 6 (include_file)
+
+
+State 15
+
+    7 function_definition: TYPE IDENTIFIER • L_PAR parameter_list R_PAR statement_block
+
+    L_PAR  shift, and go to state 17
+
+
+State 16
+
+    9 function_list: function_definition function_list •
+
+    $default  reduce using rule 9 (function_list)
+
+
+State 17
+
+    7 function_definition: TYPE IDENTIFIER L_PAR • parameter_list R_PAR statement_block
+
+    TYPE  shift, and go to state 18
+
+    $default  reduce using rule 11 (parameter_list)
+
+    parameter                 go to state 19
+    parameter_list            go to state 20
+    non_empty_parameter_list  go to state 21
+
+
+State 18
+
+   10 parameter: TYPE • IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 22
+
+
+State 19
+
+   13 non_empty_parameter_list: parameter •
+   14                         | parameter • COMMA non_empty_parameter_list
+
+    COMMA  shift, and go to state 23
+
+    $default  reduce using rule 13 (non_empty_parameter_list)
+
+
+State 20
+
+    7 function_definition: TYPE IDENTIFIER L_PAR parameter_list • R_PAR statement_block
+
+    R_PAR  shift, and go to state 24
+
+
+State 21
+
+   12 parameter_list: non_empty_parameter_list •
+
+    $default  reduce using rule 12 (parameter_list)
+
+
+State 22
+
+   10 parameter: TYPE IDENTIFIER •
+
+    $default  reduce using rule 10 (parameter)
+
+
+State 23
+
+   14 non_empty_parameter_list: parameter COMMA • non_empty_parameter_list
+
+    TYPE  shift, and go to state 18
+
+    parameter                 go to state 19
+    non_empty_parameter_list  go to state 25
+
+
+State 24
+
+    7 function_definition: TYPE IDENTIFIER L_PAR parameter_list R_PAR • statement_block
+
+    L_BRACE  shift, and go to state 26
+
+    statement_block  go to state 27
+
+
+State 25
+
+   14 non_empty_parameter_list: parameter COMMA non_empty_parameter_list •
+
+    $default  reduce using rule 14 (non_empty_parameter_list)
+
+
+State 26
+
+   15 statement_block: L_BRACE • statement_list R_BRACE
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    TYPE             shift, and go to state 30
+    RETURN           shift, and go to state 31
+    IF               shift, and go to state 32
+    WHILE            shift, and go to state 33
+    READ             shift, and go to state 34
+    WRITE            shift, and go to state 35
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    SEMI_COLON  reduce using rule 30 (expression_statement)
+    $default    reduce using rule 16 (statement_list)
+
+    statement_list        go to state 37
+    statement             go to state 38
+    variable_declaration  go to state 39
+    expression_statement  go to state 40
+    return_statement      go to state 41
+    if_statement          go to state 42
+    while_statement       go to state 43
+    read_statement        go to state 44
+    print_statement       go to state 45
+    expression            go to state 46
+    term                  go to state 47
+
+
+State 27
+
+    7 function_definition: TYPE IDENTIFIER L_PAR parameter_list R_PAR statement_block •
+
+    $default  reduce using rule 7 (function_definition)
+
+
+State 28
+
+   49 term: NUMBER •
+
+    $default  reduce using rule 49 (term)
+
+
+State 29
+
+   48 term: IDENTIFIER •
+
+    $default  reduce using rule 48 (term)
+
+
+State 30
+
+   25 variable_declaration: TYPE • IDENTIFIER variable_value_assignation variable_declaration_enumeration
+
+    IDENTIFIER  shift, and go to state 48
+
+
+State 31
+
+   32 return_statement: RETURN • expression_statement
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    $default  reduce using rule 30 (expression_statement)
+
+    expression_statement  go to state 49
+    expression            go to state 46
+    term                  go to state 47
+
+
+State 32
+
+   35 if_statement: IF • L_PAR boolean_expression R_PAR statement_block else_if_statement
+
+    L_PAR  shift, and go to state 50
+
+
+State 33
+
+   36 while_statement: WHILE • L_PAR boolean_expression R_PAR statement_block
+
+    L_PAR  shift, and go to state 51
+
+
+State 34
+
+   37 read_statement: READ • SHIFT_RIGHT IDENTIFIER
+
+    SHIFT_RIGHT  shift, and go to state 52
+
+
+State 35
+
+   38 print_statement: WRITE • SHIFT_LEFT IDENTIFIER
+
+    SHIFT_LEFT  shift, and go to state 53
+
+
+State 36
+
+   50 term: BOOLEAN_LITERAL •
+
+    $default  reduce using rule 50 (term)
+
+
+State 37
+
+   15 statement_block: L_BRACE statement_list • R_BRACE
+
+    R_BRACE  shift, and go to state 54
+
+
+State 38
+
+   17 statement_list: statement • statement_list
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    TYPE             shift, and go to state 30
+    RETURN           shift, and go to state 31
+    IF               shift, and go to state 32
+    WHILE            shift, and go to state 33
+    READ             shift, and go to state 34
+    WRITE            shift, and go to state 35
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    SEMI_COLON  reduce using rule 30 (expression_statement)
+    $default    reduce using rule 16 (statement_list)
+
+    statement_list        go to state 55
+    statement             go to state 38
+    variable_declaration  go to state 39
+    expression_statement  go to state 40
+    return_statement      go to state 41
+    if_statement          go to state 42
+    while_statement       go to state 43
+    read_statement        go to state 44
+    print_statement       go to state 45
+    expression            go to state 46
+    term                  go to state 47
+
+
+State 39
+
+   18 statement: variable_declaration • SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 56
+
+
+State 40
+
+   19 statement: expression_statement • SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 57
+
+
+State 41
+
+   20 statement: return_statement • SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 58
+
+
+State 42
+
+   21 statement: if_statement •
+
+    $default  reduce using rule 21 (statement)
+
+
+State 43
+
+   22 statement: while_statement •
+
+    $default  reduce using rule 22 (statement)
+
+
+State 44
+
+   23 statement: read_statement • SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 59
+
+
+State 45
+
+   24 statement: print_statement • SEMI_COLON
+
+    SEMI_COLON  shift, and go to state 60
+
+
+State 46
+
+   31 expression_statement: expression •
+   40 expression: expression • OPERATOR term
+   41           | expression • BOOL_OPERATOR term
+
+    OPERATOR       shift, and go to state 61
+    BOOL_OPERATOR  shift, and go to state 62
+
+    $default  reduce using rule 31 (expression_statement)
+
+
+State 47
+
+   39 expression: term •
+
+    $default  reduce using rule 39 (expression)
+
+
+State 48
+
+   25 variable_declaration: TYPE IDENTIFIER • variable_value_assignation variable_declaration_enumeration
+
+    EQUAL  shift, and go to state 63
+
+    $default  reduce using rule 26 (variable_value_assignation)
+
+    variable_value_assignation  go to state 64
+
+
+State 49
+
+   32 return_statement: RETURN expression_statement •
+
+    $default  reduce using rule 32 (return_statement)
+
+
+State 50
+
+   35 if_statement: IF L_PAR • boolean_expression R_PAR statement_block else_if_statement
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    boolean_expression  go to state 65
+    term                go to state 66
+
+
+State 51
+
+   36 while_statement: WHILE L_PAR • boolean_expression R_PAR statement_block
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    boolean_expression  go to state 67
+    term                go to state 66
+
+
+State 52
+
+   37 read_statement: READ SHIFT_RIGHT • IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 68
+
+
+State 53
+
+   38 print_statement: WRITE SHIFT_LEFT • IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 69
+
+
+State 54
+
+   15 statement_block: L_BRACE statement_list R_BRACE •
+
+    $default  reduce using rule 15 (statement_block)
+
+
+State 55
+
+   17 statement_list: statement statement_list •
+
+    $default  reduce using rule 17 (statement_list)
+
+
+State 56
+
+   18 statement: variable_declaration SEMI_COLON •
+
+    $default  reduce using rule 18 (statement)
+
+
+State 57
+
+   19 statement: expression_statement SEMI_COLON •
+
+    $default  reduce using rule 19 (statement)
+
+
+State 58
+
+   20 statement: return_statement SEMI_COLON •
+
+    $default  reduce using rule 20 (statement)
+
+
+State 59
+
+   23 statement: read_statement SEMI_COLON •
+
+    $default  reduce using rule 23 (statement)
+
+
+State 60
+
+   24 statement: print_statement SEMI_COLON •
+
+    $default  reduce using rule 24 (statement)
+
+
+State 61
+
+   40 expression: expression OPERATOR • term
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    term  go to state 70
+
+
+State 62
+
+   41 expression: expression BOOL_OPERATOR • term
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    term  go to state 71
+
+
+State 63
+
+   27 variable_value_assignation: EQUAL • arithmetic_expression
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    arithmetic_expression  go to state 72
+    term                   go to state 73
+
+
+State 64
+
+   25 variable_declaration: TYPE IDENTIFIER variable_value_assignation • variable_declaration_enumeration
+
+    COMMA  shift, and go to state 74
+
+    $default  reduce using rule 28 (variable_declaration_enumeration)
+
+    variable_declaration_enumeration  go to state 75
+
+
+State 65
+
+   35 if_statement: IF L_PAR boolean_expression • R_PAR statement_block else_if_statement
+
+    R_PAR  shift, and go to state 76
+
+
+State 66
+
+   43 boolean_expression: term • boolean_operator_usage
+
+    BOOL_OPERATOR  shift, and go to state 77
+
+    $default  reduce using rule 46 (boolean_operator_usage)
+
+    boolean_operator_usage  go to state 78
+
+
+State 67
+
+   36 while_statement: WHILE L_PAR boolean_expression • R_PAR statement_block
+
+    R_PAR  shift, and go to state 79
+
+
+State 68
+
+   37 read_statement: READ SHIFT_RIGHT IDENTIFIER •
+
+    $default  reduce using rule 37 (read_statement)
+
+
+State 69
+
+   38 print_statement: WRITE SHIFT_LEFT IDENTIFIER •
+
+    $default  reduce using rule 38 (print_statement)
+
+
+State 70
+
+   40 expression: expression OPERATOR term •
+
+    $default  reduce using rule 40 (expression)
+
+
+State 71
+
+   41 expression: expression BOOL_OPERATOR term •
+
+    $default  reduce using rule 41 (expression)
+
+
+State 72
+
+   27 variable_value_assignation: EQUAL arithmetic_expression •
+
+    $default  reduce using rule 27 (variable_value_assignation)
+
+
+State 73
+
+   42 arithmetic_expression: term • operator_usage
+
+    OPERATOR  shift, and go to state 80
+
+    $default  reduce using rule 44 (operator_usage)
+
+    operator_usage  go to state 81
+
+
+State 74
+
+   29 variable_declaration_enumeration: COMMA • IDENTIFIER variable_value_assignation variable_declaration_enumeration
+
+    IDENTIFIER  shift, and go to state 82
+
+
+State 75
+
+   25 variable_declaration: TYPE IDENTIFIER variable_value_assignation variable_declaration_enumeration •
+
+    $default  reduce using rule 25 (variable_declaration)
+
+
+State 76
+
+   35 if_statement: IF L_PAR boolean_expression R_PAR • statement_block else_if_statement
+
+    L_BRACE  shift, and go to state 26
+
+    statement_block  go to state 83
+
+
+State 77
+
+   47 boolean_operator_usage: BOOL_OPERATOR • term boolean_operator_usage
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    term  go to state 84
+
+
+State 78
+
+   43 boolean_expression: term boolean_operator_usage •
+
+    $default  reduce using rule 43 (boolean_expression)
+
+
+State 79
+
+   36 while_statement: WHILE L_PAR boolean_expression R_PAR • statement_block
+
+    L_BRACE  shift, and go to state 26
+
+    statement_block  go to state 85
+
+
+State 80
+
+   45 operator_usage: OPERATOR • term operator_usage
+
+    NUMBER           shift, and go to state 28
+    IDENTIFIER       shift, and go to state 29
+    BOOLEAN_LITERAL  shift, and go to state 36
+
+    term  go to state 86
+
+
+State 81
+
+   42 arithmetic_expression: term operator_usage •
+
+    $default  reduce using rule 42 (arithmetic_expression)
+
+
+State 82
+
+   29 variable_declaration_enumeration: COMMA IDENTIFIER • variable_value_assignation variable_declaration_enumeration
+
+    EQUAL  shift, and go to state 63
+
+    $default  reduce using rule 26 (variable_value_assignation)
+
+    variable_value_assignation  go to state 87
+
+
+State 83
+
+   35 if_statement: IF L_PAR boolean_expression R_PAR statement_block • else_if_statement
+
+    ELSE  shift, and go to state 88
+
+    $default  reduce using rule 33 (else_if_statement)
+
+    else_if_statement  go to state 89
+
+
+State 84
+
+   47 boolean_operator_usage: BOOL_OPERATOR term • boolean_operator_usage
+
+    BOOL_OPERATOR  shift, and go to state 77
+
+    $default  reduce using rule 46 (boolean_operator_usage)
+
+    boolean_operator_usage  go to state 90
+
+
+State 85
+
+   36 while_statement: WHILE L_PAR boolean_expression R_PAR statement_block •
+
+    $default  reduce using rule 36 (while_statement)
+
+
+State 86
+
+   45 operator_usage: OPERATOR term • operator_usage
+
+    OPERATOR  shift, and go to state 80
+
+    $default  reduce using rule 44 (operator_usage)
+
+    operator_usage  go to state 91
+
+
+State 87
+
+   29 variable_declaration_enumeration: COMMA IDENTIFIER variable_value_assignation • variable_declaration_enumeration
+
+    COMMA  shift, and go to state 74
+
+    $default  reduce using rule 28 (variable_declaration_enumeration)
+
+    variable_declaration_enumeration  go to state 92
+
+
+State 88
+
+   34 else_if_statement: ELSE • statement_block
+
+    L_BRACE  shift, and go to state 26
+
+    statement_block  go to state 93
+
+
+State 89
+
+   35 if_statement: IF L_PAR boolean_expression R_PAR statement_block else_if_statement •
+
+    $default  reduce using rule 35 (if_statement)
+
+
+State 90
+
+   47 boolean_operator_usage: BOOL_OPERATOR term boolean_operator_usage •
+
+    $default  reduce using rule 47 (boolean_operator_usage)
+
+
+State 91
+
+   45 operator_usage: OPERATOR term operator_usage •
+
+    $default  reduce using rule 45 (operator_usage)
+
+
+State 92
+
+   29 variable_declaration_enumeration: COMMA IDENTIFIER variable_value_assignation variable_declaration_enumeration •
+
+    $default  reduce using rule 29 (variable_declaration_enumeration)
+
+
+State 93
+
+   34 else_if_statement: ELSE statement_block •
+
+    $default  reduce using rule 34 (else_if_statement)

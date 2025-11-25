@@ -34,10 +34,10 @@ struct BinaryTreeNode* searchNode(struct BinaryTreeNode* node, char *value){
         return node;
     }
     else if (strcmp(value, node->key) < 0){
-        searchNode(node->left, value);
+        return searchNode(node->left, value);
     }
     else {
-        searchNode(node->right, value);
+        return searchNode(node->right, value);
     }
 }
 
