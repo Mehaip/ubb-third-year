@@ -3,32 +3,37 @@
 
 #include <queue>
 #include <mutex>
-#include <semaphore>
 #include "parser.h"
-
+#include <condition_variable>
 
 
 class QueueMutex{
     private:
         std::queue<Pair> queue;
         std::mutex mtx;
-        std::counting_semaphore<> sem;
+        std::condition_variable cv_not_full;
+        std::condition_variable cv_not_empty;
+        int MAX = 100;
     public:
-        QueueMutex() : sem(0) {};
+        QueueMutex(){}
 
         void push(Pair data){
-            mtx.lock();
+            std::unique_lock<std::mutex> lock(mtx);
+            cv_not_full.wait(lock, [this]{
+                return queue.size() < MAX;
+            });
             queue.push(data);
-            mtx.unlock();
-            sem.release();
+            cv_not_empty.notify_one();
         }
 
         Pair pop(){
-            sem.acquire();
-            mtx.lock();
+            std::unique_lock<std::mutex> lock(mtx);
+            cv_not_empty.wait(lock, [this]{
+                return !queue.empty();
+            });
             Pair popped_item = queue.front();
             queue.pop();
-            mtx.unlock();
+            cv_not_full.notify_one();
             return popped_item;
         }
         

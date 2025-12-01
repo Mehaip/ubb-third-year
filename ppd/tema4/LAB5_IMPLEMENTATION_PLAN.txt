@@ -1,0 +1,364 @@
+================================================================================
+                    LAB 5 IMPLEMENTATION PLAN
+================================================================================
+
+PHASE 1: FOUNDATION (INDEPENDENT CHANGES)
+================================================================================
+
+STEP 1: THREAD POOL FOR READERS
+--------------------------------------------------------------------------------
+Goal: Replace manual thread creation with a thread pool that manages p_r threads
+
+What needs to be done:
+□ Create or integrate a ThreadPool class (C++ implementation)
+  - Constructor: ThreadPool(int num_threads)
+  - Method: void enqueue(std::function<void()> task)
+  - Method: void shutdown() / destructor to join all threads
+  - Internal: std::vector<std::thread> workers
+  - Internal: std::queue<std::function<void()>> tasks
+  - Internal: std::mutex queue_mutex
+  - Internal: std::condition_variable condition
+  - Internal: bool stop flag
+
+□ Modify solve_parallel() in parallel.cpp:
+  - Create ThreadPool with p_r threads
+  - For each of the 10 files, submit a task to the thread pool
+  - Each task reads one entire file and pushes all pairs to the queue
+  - Wait for all tasks to complete before sending poison pills
+
+□ Files to modify:
+  - Create: src/thread_pool.h (new file)
+  - Modify: src/parallel.cpp (solve_parallel function)
+
+Expected outcome: Readers use thread pool instead of manual threads
+
+
+STEP 2: BOUNDED QUEUE WITH CONDITION VARIABLES
+--------------------------------------------------------------------------------
+Goal: Change unbounded queue to bounded queue with condition variables
+
+What needs to be done:
+□ Modify QueueMutex class in src/queue.h:
+  - Add: int capacity (MAX = 50 or 100)
+  - Add: std::condition_variable cv_not_full (for producers)
+  - Add: std::condition_variable cv_not_empty (for consumers)
+  - Remove: std::counting_semaphore<> sem
+  - Keep: std::mutex mtx
+
+□ Rewrite push() method:
+  - Lock mutex
+  - Wait on cv_not_full while queue.size() >= capacity
+  - Push item to queue
+  - Notify cv_not_empty
+  - Unlock mutex
+
+□ Rewrite pop() method:
+  - Lock mutex
+  - Wait on cv_not_empty while queue is empty
+  - Pop item from queue
+  - Notify cv_not_full
+  - Unlock mutex
+  - Return item
+
+□ Handle poison pills properly:
+  - Workers need to detect -1 and exit
+  - Make sure all workers receive poison pills
+
+□ Files to modify:
+  - Modify: src/queue.h (entire QueueMutex class)
+
+Expected outcome: Queue blocks when full/empty, uses condition variables
+
+
+================================================================================
+PHASE 2: CORE COMPLEXITY (THE HARD PART)
+================================================================================
+
+STEP 3: FINE-GRAIN SYNCHRONIZATION (NODE-LEVEL LOCKING)
+--------------------------------------------------------------------------------
+Goal: Replace list-level locking with node-level locking
+
+What needs to be done:
+□ Create new LinkedList implementation with fine-grain locking:
+  - Each Node needs its own std::mutex
+  - Use sentinel nodes (dummy head and tail) to simplify edge cases
+
+□ Node structure changes:
+  - Add: std::mutex node_mutex to each Node
+  - Keep: Pair data, Node* next
+
+□ Implement hand-over-hand locking for addOrUpdate():
+  - Lock head sentinel
+  - Lock next node
+  - Unlock previous node
+  - Continue until found or end
+  - If ID found: update grade (while holding that node's lock)
+  - If ID not found: insert new node in sorted position OR at end
+  - Critical: Handle case where 2 workers update same ID concurrently
+
+□ Sorting consideration for insertion:
+  - For now, can insert at end (unsorted)
+  - OR start implementing sorted insertion here (descending by grade)
+  - Decision: Recommend unsorted for now, sorted in Step 5
+
+□ Remove list-level mutex from LinkedList class
+
+□ Handle edge cases:
+  - Empty list (only sentinels)
+  - Single node
+  - Concurrent access to same node
+  - Two workers trying to insert same ID simultaneously
+
+□ Files to modify:
+  - Modify: src/linked_list_parallel.h (complete rewrite of locking strategy)
+  - Consider: Create src/linked_list_fine_grain.h (new file) to keep old version
+
+Expected outcome: Multiple workers can modify different parts of list simultaneously
+
+
+================================================================================
+PHASE 3: BONUS FEATURES (BEFORE SORTING)
+================================================================================
+
+STEP 4: BONUS 2 - CHEATING DETECTION
+--------------------------------------------------------------------------------
+Goal: Handle grade = -1 as cheating, remove from results, track cheaters
+
+What needs to be done:
+□ Create a separate CheaterList class:
+  - Similar to LinkedList but simpler (just stores IDs)
+  - Thread-safe with appropriate locking
+  - Method: void addCheater(int id)
+  - Method: void saveToFile(const std::string& filename)
+
+□ Modify addOrUpdate() in LinkedList:
+  - Check if grade == -1
+  - If yes:
+    * Remove this student from the list entirely (if exists)
+    * Add to cheater list
+    * Do NOT add/update in main list
+  - If no: proceed with normal add/update logic
+
+□ Handle removal logic:
+  - If student has existing grade and receives -1: remove their node
+  - If student doesn't exist and receives -1: just add to cheater list
+
+□ Modify solve_parallel():
+  - Create CheaterList instance
+  - Pass to workers
+  - After all processing, save cheater list to "files/cheaters.txt"
+
+□ Files to modify:
+  - Create: src/cheater_list.h (new file)
+  - Modify: src/linked_list_parallel.h (addOrUpdate logic)
+  - Modify: src/parallel.cpp (add cheater list handling)
+
+Expected outcome: Cheaters tracked separately, not in final results
+
+
+================================================================================
+PHASE 4: SORTING FEATURES
+================================================================================
+
+STEP 5: SORTED LIST CREATION (LISTASORTATA)
+--------------------------------------------------------------------------------
+Goal: After all data added, workers build a sorted list (descending by grade)
+
+What needs to be done:
+□ Create SortedLinkedList class:
+  - Similar structure to LinkedList
+  - Use fine-grain locking (node-level mutexes)
+  - Method: void insertSorted(Pair data)
+  - Insertion always maintains descending order by grade
+  - Use sentinel nodes
+
+□ Implement insertSorted() with hand-over-hand locking:
+  - Lock head sentinel
+  - Lock next node
+  - Compare grades to find correct position
+  - Unlock previous, lock next, repeat
+  - Insert at correct position while holding locks on prev and curr
+
+□ Modify solve_parallel():
+  - After all readers finish and workers process queue
+  - Create SortedLinkedList instance
+  - Workers iterate through original Lista
+  - Each worker takes nodes and inserts into SortedLinkedList
+  - Synchronization: need to coordinate which nodes each worker processes
+
+□ Coordination strategy:
+  - Option A: Each worker traverses Lista and inserts every Nth node
+  - Option B: Use atomic counter to distribute nodes
+  - Option C: Divide list into chunks for each worker
+  - Recommend: Option B (atomic counter)
+
+□ Files to create/modify:
+  - Create: src/sorted_linked_list.h (new file)
+  - Modify: src/parallel.cpp (add sorted list creation phase)
+
+Expected outcome: SortedLinkedList contains all students in descending grade order
+
+
+STEP 6: SORTED OUTPUT
+--------------------------------------------------------------------------------
+Goal: Write results file from sorted list instead of unsorted list
+
+What needs to be done:
+□ Modify solve_parallel() in parallel.cpp:
+  - Change saveToFile() call to use SortedLinkedList instead of Lista
+  - Output format: ID,Grade (one per line, descending by grade)
+
+□ Optional: Add header to results file
+  - "ID,Grade" as first line
+  - Then student data
+
+□ Files to modify:
+  - Modify: src/parallel.cpp (change which list is saved)
+
+Expected outcome: results_p.txt contains students sorted by grade (highest first)
+
+
+================================================================================
+PHASE 5: DATABASE INTEGRATION
+================================================================================
+
+STEP 7: BONUS 1 - DATABASE READING
+--------------------------------------------------------------------------------
+Goal: Read from database instead of files (one table per project)
+
+What needs to be done:
+□ Choose database: SQLite recommended (embedded, no server needed)
+  - Install: sudo apt-get install libsqlite3-dev (Linux)
+  - Include: #include <sqlite3.h>
+
+□ Create database schema:
+  - Database: students.db
+  - Tables: proiect1, proiect2, ..., proiect10
+  - Schema: CREATE TABLE proiectN (id INTEGER, grade INTEGER)
+
+□ Create script to populate database:
+  - Read existing files or generate new data
+  - Insert into database tables
+  - Script: populate_database.py or populate_database.cpp
+
+□ Create DatabaseReader class:
+  - Method: std::vector<Pair> readFromTable(const std::string& tableName)
+  - Handles database connection
+  - Executes SELECT query
+  - Returns vector of Pairs
+
+□ Modify reader tasks in solve_parallel():
+  - Instead of parseFile(filename)
+  - Use DatabaseReader::readFromTable("proiectN")
+  - Rest of logic stays the same
+
+□ Files to create/modify:
+  - Create: src/database_reader.h (new file)
+  - Create: src/database_reader.cpp (implementation)
+  - Create: populate_database.py or .cpp (database setup script)
+  - Modify: src/parallel.cpp (change data source)
+  - Modify: CMakeLists.txt or Makefile (link sqlite3 library)
+
+Expected outcome: Data read from database instead of text files
+
+
+================================================================================
+PHASE 6: TESTING & POLISH
+================================================================================
+
+STEP 8: UPDATE TESTING CONFIGURATION
+--------------------------------------------------------------------------------
+Goal: Test with 500 students, p_r=4, p_w=2,4,8
+
+What needs to be done:
+□ Update data generation:
+  - Modify generate_files.py
+  - Change number of students to 500
+  - Keep minimum 80 grades per file
+  - Consider adding some -1 grades for cheating detection testing
+
+□ Update main.cpp testing configuration:
+  - Set p_r = 4 (fixed)
+  - Test configurations: p_w = 2, 4, 8
+  - Total threads: p = 6, 8, 12
+
+□ Run comprehensive tests:
+  - Test 1: Correctness
+    * Verify all students processed
+    * Verify grades summed correctly
+    * Verify sorted order (descending)
+    * Verify cheaters detected and removed
+
+  - Test 2: Performance
+    * Run each configuration multiple times
+    * Calculate average execution time
+    * Compare speedup ratios
+    * Expected: Better speedup than Lab 4 due to fine-grain locking
+
+□ Files to modify:
+  - Modify: generate_files.py (500 students)
+  - Modify: src/main.cpp (new test configurations)
+
+□ Create verification script:
+  - Compare sequential vs parallel results
+  - Verify same students, same grades, same order
+  - Script: verify_results.py
+
+Expected outcome: All tests pass, performance measured and documented
+
+
+================================================================================
+FINAL CHECKLIST
+================================================================================
+
+Before submission, verify:
+□ All 10 files (or database) processed correctly
+□ Results file sorted in descending order by grade
+□ Cheaters identified and in separate file
+□ Thread pool manages reader threads
+□ Queue is bounded with condition variables
+□ Fine-grain locking implemented (no list-level lock)
+□ Multiple workers can work on list simultaneously
+□ No race conditions or deadlocks
+□ Performance better than Lab 4 (due to fine-grain locking)
+□ Code compiles without warnings
+□ Code formatted and commented
+
+Optional:
+□ Database reading implemented
+□ Performance comparison documented
+□ Edge cases tested (empty files, all cheaters, etc.)
+
+
+================================================================================
+NOTES & TIPS
+================================================================================
+
+Thread Pool Implementation:
+- Can use a simple implementation or reference existing C++ thread pool libraries
+- Key: Task queue + worker threads + condition variable for notification
+
+Condition Variables vs Semaphores:
+- Condition variables more flexible
+- Must use with mutex and while loop (not if!)
+- Pattern: lock -> wait while(condition) -> work -> notify -> unlock
+
+Fine-Grain Locking Strategy:
+- Always lock in same order (head to tail) to avoid deadlocks
+- Hand-over-hand: lock current, lock next, unlock current, move forward
+- Never hold more than 2 adjacent locks at once
+
+Debugging Tips:
+- Add logging to track which thread is doing what
+- Use std::cout with mutex for thread-safe printing
+- Test with small data first (10 students) before scaling to 500
+- Valgrind for memory leaks: valgrind --leak-check=full ./program
+
+Performance Expectations:
+- Fine-grain locking should improve parallel performance
+- With 500 students, overhead amortized better than Lab 4 (200 students)
+- Bounded queue prevents memory issues with large datasets
+
+================================================================================
+END OF IMPLEMENTATION PLAN
+================================================================================
