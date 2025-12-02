@@ -6,7 +6,7 @@ void solve_sequential()
     CheaterList cheaters;
     for (int i = 1; i <= 10; i++)
     {
-        std::string fileName = "files/proiect" + std::to_string(i) + ".txt";
+        std::string fileName = "files/input/proiect" + std::to_string(i) + ".txt";
         std::vector<Pair> pairs = parseFile(fileName);
         for (auto &student_data : pairs)
         {
@@ -28,6 +28,6 @@ void solve_sequential()
         node = node->next;
     }
 
-    student_list.saveToFile("files/rezultate.txt");
-    cheaters.saveCheatersToFile("files/cheaters.txt");
+    student_list.saveToFile("files/output/rezultate.txt");
+    cheaters.saveCheatersToFile("files/output/cheaters.txt");
 }

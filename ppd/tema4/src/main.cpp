@@ -26,7 +26,7 @@ int main() {
 
     for (int run = 0; run < NUM_RUNS; run++) {
         // Generate new data
-        system("python generate_files.py");
+        system("python3 src/scripts/generate_files.py");
 
         // Run sequential
         auto start = std::chrono::high_resolution_clock::now();

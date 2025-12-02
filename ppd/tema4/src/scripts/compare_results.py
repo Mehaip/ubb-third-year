@@ -1,7 +1,13 @@
+import os
+
+# Get project root (2 levels up from this script)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(script_dir))
 
 def parse_file(filename):
     results = {}
-    with open(filename, "r") as f:
+    filepath = os.path.join(project_root, filename)
+    with open(filepath, "r") as f:
         for line in f:
             line = line.strip()
             if line:
@@ -11,8 +17,8 @@ def parse_file(filename):
                 results[student_id] = grade
     return results
 
-seq_results = parse_file("files/rezultate.txt")
-par_results = parse_file("files/rezultate_p.txt")
+seq_results = parse_file("files/output/rezultate.txt")
+par_results = parse_file("files/output/rezultate_p.txt")
 
 # Compare
 if len(seq_results) != len(par_results):

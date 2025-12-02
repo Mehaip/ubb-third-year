@@ -46,7 +46,7 @@ void solve_parallel(int p_r, int p_w)
     for (int i = 1; i <= 10; i++)
     {
         pool.enqueue([i, &data_queue]() { /// attributes and then the function
-            std::string filename = "files/proiect" + std::to_string(i) + ".txt";
+            std::string filename = "files/input/proiect" + std::to_string(i) + ".txt";
             std::vector<Pair> pairs = parseFile(filename);
             for (auto &p : pairs)
             {
@@ -75,7 +75,7 @@ void solve_parallel(int p_r, int p_w)
         node = node->next;
     }
     
-    student_list.saveToFile("files/rezultate_p.txt");
-    cheaters.saveCheatersToFile("files/cheaters_p.txt");
+    student_list.saveToFile("files/output/rezultate_p.txt");
+    cheaters.saveCheatersToFile("files/output/cheaters_p.txt");
     printf("save_to_file\n");
 }
