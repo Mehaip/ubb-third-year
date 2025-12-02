@@ -1,5 +1,6 @@
 import random
 import os
+import sqlite3
 
 # Get project root (2 levels up from this script)
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -10,6 +11,24 @@ input_dir = os.path.join(project_root, "files", "input")
 output_dir = os.path.join(project_root, "files", "output")
 os.makedirs(input_dir, exist_ok=True)
 os.makedirs(output_dir, exist_ok=True)
+
+# Connect to SQLite database
+db_path = os.path.join(project_root, "students.db")
+conn = sqlite3.connect(db_path)
+cursor = conn.cursor()
+
+# Create tables if they don't exist
+for proj in range(1, 11):
+    cursor.execute(f'''
+        CREATE TABLE IF NOT EXISTS proiect{proj} (
+            id INTEGER,
+            grade INTEGER
+        )
+    ''')
+    # Clear existing data in table
+    cursor.execute(f'DELETE FROM proiect{proj}')
+
+conn.commit()
 
 for proj in range(1, 11):
     num_students = random.randint(80, 200)
@@ -23,4 +42,15 @@ for proj in range(1, 11):
             grade = random.randint(-1, 10)
             f.write(f"{student_id},{grade}\n")
 
-print("Generated 10 project files in files/input/")
+            # Insert into database table
+            cursor.execute(f'INSERT INTO proiect{proj} (id, grade) VALUES (?, ?)',
+                         (student_id, grade))
+
+    conn.commit()
+    print(f"Generated proiect{proj}.txt and inserted {num_students} records into proiect{proj} table")
+
+# Close database connection
+conn.close()
+
+print("\nGenerated 10 project files in files/input/")
+print(f"Populated SQLite database at {db_path}")

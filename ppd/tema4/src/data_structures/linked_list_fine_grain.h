@@ -6,94 +6,145 @@
 
 using namespace std;
 
-class NodeMutex {
-    public:
+class NodeMutex
+{
+public:
     Pair data;
-    NodeMutex* next;
+    NodeMutex *next;
     std::mutex node_mutex;
 
     NodeMutex(Pair value) : data(value), next(nullptr) {};
-    
-}; 
+};
 
-class LinkedListFG {
-    private:
-        NodeMutex* head;
-        NodeMutex* tail;
+class LinkedListFG
+{
+private:
+    NodeMutex *head;
+    NodeMutex *tail;
 
-    public:
-        LinkedListFG(){
-            head = new NodeMutex(Pair{-1, -1});
-            tail = new NodeMutex(Pair{-1, -1});
-            head->next = tail;
+public:
+    LinkedListFG()
+    {
+        head = new NodeMutex(Pair{-1, -1});
+        tail = new NodeMutex(Pair{-1, -1});
+        head->next = tail;
+    }
+
+    ~LinkedListFG()
+    {
+        NodeMutex *curr = head;
+        while (curr != nullptr)
+        {
+            NodeMutex *next = curr->next;
+            delete curr;
+            curr = next;
         }
+    }
 
-        ~LinkedListFG(){
-            NodeMutex* curr = head;
-            while(curr != nullptr){
-                NodeMutex* next = curr->next;
+    int size()
+    {
+
+        NodeMutex *curr = head->next;
+        curr->node_mutex.lock();
+
+        int size = 0;
+        while (curr != tail)
+        {
+            size++;
+            curr->node_mutex.unlock();
+            curr = curr->next;
+            curr->node_mutex.lock();
+        }
+        return size;
+    }
+
+    void addOrUpdate(Pair data)
+    {
+        NodeMutex *prev = head;
+        prev->node_mutex.lock();
+
+        NodeMutex *curr = head->next;
+        curr->node_mutex.lock();
+        while (curr != tail)
+        {
+            if (curr->data.id == data.id)
+            {
+                curr->data.grade += data.grade;
+                prev->node_mutex.unlock();
+                curr->node_mutex.unlock();
+                return;
+            }
+            prev->node_mutex.unlock();
+            prev = curr;
+            curr = curr->next;
+            curr->node_mutex.lock();
+        }
+        /// not found in list
+        NodeMutex *newNode = new NodeMutex(data);
+        newNode->next = curr;
+        prev->next = newNode;
+
+        curr->node_mutex.unlock();
+        prev->node_mutex.unlock();
+    };
+
+    void removeCheater(int id)
+    {
+        NodeMutex *prev = head;
+        prev->node_mutex.lock();
+        NodeMutex *curr = head->next;
+        curr->node_mutex.lock();
+        while (curr != tail)
+        {
+            if (curr->data.id == id)
+            {
+                prev->next = curr->next;
+                prev->node_mutex.unlock();
+                curr->node_mutex.unlock();
                 delete curr;
-                curr = next;
+                return;
             }
-        }
-
-        void addOrUpdate(Pair data){
-            NodeMutex *prev = head;
-            prev->node_mutex.lock();
-
-            NodeMutex *curr = head->next;
-            curr->node_mutex.lock();
-            while(curr != tail){
-                if(curr->data.id == data.id){
-                    curr->data.grade += data.grade;
-                    prev->node_mutex.unlock();
-                    curr->node_mutex.unlock();
-                    return;
-                }
-                prev->node_mutex.unlock();
-                prev = curr;
-                curr = curr->next;
-                curr->node_mutex.lock();
-            }
-            ///not found in list
-            NodeMutex *newNode= new NodeMutex(data);
-            newNode->next = curr;
-            prev->next = newNode;
-
-            curr->node_mutex.unlock();
             prev->node_mutex.unlock();
-        };
-
-        void removeCheater(int id){
-            NodeMutex *prev = head;
-            prev->node_mutex.lock();
-            NodeMutex *curr = head->next;
+            prev = curr;
+            curr = curr->next;
             curr->node_mutex.lock();
-            while(curr != tail){
-                if(curr->data.id == id){
-                    prev->next = curr->next;
-                    prev->node_mutex.unlock();
-                    curr->node_mutex.unlock();
-                    delete curr;
-                    return;
-                }
-                prev->node_mutex.unlock();
-                prev = curr;
-                curr = curr->next;
-                curr->node_mutex.lock();
-            }
-            curr->node_mutex.unlock();
-            prev->node_mutex.unlock();
-
         }
+        curr->node_mutex.unlock();
+        prev->node_mutex.unlock();
+    }
 
-        void saveToFile(const std::string& filename){
-            NodeMutex* temp = head->next;
-            std::ofstream fout(filename);
-            while(temp != tail){
-                fout << temp->data.id <<"," << temp->data.grade << "\n";
-                temp = temp->next;
-            }
+    Pair removeFirst()
+    {
+
+        head->node_mutex.lock();
+        NodeMutex *first = head->next;
+        first->node_mutex.lock();
+        if (first == tail)
+        {
+            Pair value = {-1, -1};
+            head->node_mutex.unlock();
+            first->node_mutex.unlock();
+            return value;
         }
+        head->next = first->next;
+        Pair nodeData = first->data;
+
+        head->node_mutex.unlock();
+        first->node_mutex.unlock();
+
+        delete first;
+        return nodeData;
+    }
+
+    void saveToFile(const std::string &filename)
+    {
+        NodeMutex *temp = head->next;
+        std::ofstream fout(filename);
+        while (temp != tail)
+        {
+            fout << temp->data.id << "," << temp->data.grade << "\n";
+            temp = temp->next;
+        }
+    }
 };
 #endif

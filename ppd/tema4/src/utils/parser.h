@@ -4,11 +4,12 @@
 #include <vector>
 #include <string>
 
-struct Pair{
+struct Pair
+{
     int id;
     int grade;
 };
 
-std::vector<Pair> parseFile(const std::string& filename);
+std::vector<Pair> parseFile(const std::string &filename);
 
 #endif

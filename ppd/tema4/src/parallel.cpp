@@ -1,14 +1,21 @@
 #include "linked_list_fine_grain.h"
 #include "linked_list_parallel.h"
+#include "sorted_linked_list_fine_grain.h"
 #include "queue.h"
 #include "thread_pool.h"
 #include <thread>
 #include <vector>
 #include <functional>
 #include "cheater_list.h"
+#include <atomic>
+#include <barrier>
+#include <sqlite3.h>
 
-void worker_function(QueueMutex *data_queue, LinkedListFG *student_list, CheaterList *cheater_list)
+template <typename BarrierType>
+void worker_function(BarrierType *worker_barrier, SortedLinkedListFG *sorted_student_list,
+                     QueueMutex *data_queue, LinkedListFG *student_list, CheaterList *cheater_list)
 {
+
     while (true)
     {
         Pair data = data_queue->pop();
@@ -25,6 +32,17 @@ void worker_function(QueueMutex *data_queue, LinkedListFG *student_list, Cheater
             student_list->addOrUpdate(data);
         }
     }
+
+    worker_barrier->arrive_and_wait(); // asteptam sa termine worker procesurile
+
+    while (true)
+    {
+
+        Pair nodeData = student_list->removeFirst();
+        if (nodeData.id == -1)
+            break;
+        sorted_student_list->add(nodeData);
+    }
 }
 
 void solve_parallel(int p_r, int p_w)
@@ -33,11 +51,22 @@ void solve_parallel(int p_r, int p_w)
     LinkedListFG student_list;
     QueueMutex data_queue;
     CheaterList cheaters;
-
+    SortedLinkedListFG sorted_student_list;
+    std::barrier worker_barrier(p_w, /// callback function care sterge toti cheaterii
+                                [&]()
+                                {
+                                    NodeCheater *node = cheaters.head;
+                                    while (node != nullptr)
+                                    {
+                                        student_list.removeCheater(node->id_student);
+                                        node = node->next;
+                                    }
+                                });
     for (int i = 0; i < p_w; i++)
     {
         printf("worker push back\n");
-        workers.push_back(std::thread(worker_function, &data_queue, &student_list, &cheaters));
+        workers.push_back(std::thread([&]()
+                                      { worker_function(&worker_barrier, &sorted_student_list, &data_queue, &student_list, &cheaters); }));
     }
 
     /// THREAD POOL
@@ -69,13 +98,7 @@ void solve_parallel(int p_r, int p_w)
     }
     printf("push_workers\n");
 
-    NodeCheater* node = cheaters.head;
-    while(node != nullptr){
-        student_list.removeCheater(node->id_student);
-        node = node->next;
-    }
-    
-    student_list.saveToFile("files/output/rezultate_p.txt");
+    sorted_student_list.saveToFile("files/output/rezultate_p.txt");
     cheaters.saveCheatersToFile("files/output/cheaters_p.txt");
     printf("save_to_file\n");
 }
