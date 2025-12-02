@@ -1,1 +1,2 @@
 dc ar fi conditional variable mai bun decat semaphore? in queue
+linked_list_fine_grain implementation pt addOrUpdate (desenul schizo de pe caiet)

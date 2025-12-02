@@ -46,6 +46,35 @@ class LinkedList{
 
         }
 
+        void removeCheater(int id){
+            mtx.lock();
+
+            
+            if(head != nullptr && head->data.id == id){
+                Node* temp = head;
+                head = head->next;
+                delete temp;
+                mtx.unlock();
+                return;
+            }
+
+            // Search for the node to remove
+            Node* prev = head;
+            while(prev != nullptr && prev->next != nullptr){
+                if(prev->next->data.id == id){
+                    Node* toDelete = prev->next;
+                    prev->next = prev->next->next;
+                    delete toDelete;
+                    mtx.unlock();
+                    return;
+                }
+                prev = prev->next;
+            }
+
+            // Not found, just unlock
+            mtx.unlock();
+        }
+
         void saveToFile(const std::string& filename){
             Node* temp = head;
             std::ofstream fout(filename);

@@ -8,7 +8,7 @@ for proj in range(1, 11):
 
     with open(f"files/proiect{proj}.txt", "w") as f:
         for student_id in selected:
-            grade = random.randint(1, 10)
+            grade = random.randint(-1, 10)
             f.write(f"{student_id},{grade}\n")
 
 print("Generated 10 project files in files/")
