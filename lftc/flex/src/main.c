@@ -5,6 +5,7 @@
 
 extern FILE *yyin; //fisierul din care va fi citit textul
 extern int yylex(void);
+void inorder(void *table, FILE *out);
 
 int yywrap(){
     return 1;
@@ -36,7 +37,7 @@ int main(int argc, char **argv){
             return 1;
         }
     }
-    
+
     yylex();
 
 

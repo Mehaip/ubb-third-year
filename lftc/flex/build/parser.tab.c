@@ -71,13 +71,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "bst.h"
 //#include "globals.h"
 int yylex(void);
 void yyerror(const char *s);
 extern int yylineno;
 
 
-#line 81 "build/parser.tab.c"
+#line 82 "build/parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -551,12 +552,12 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    21,    21,    22,    25,    27,    30,    32,    36,    40,
-      44,    45,    49,    52,    54,    58,    60,    66,    69,    71,
-      75,    76,    77,    78,    79,    80,    81,    85,    91,    93,
-      97,    99,   105,   107,   111,   115,   117,   122,   131,   139,
-     145,   153,   154,   155,   156,   160,   165,   169,   171,   176,
-     178,   184,   185,   186
+       0,    22,    22,    23,    26,    28,    31,    33,    37,    41,
+      45,    46,    50,    53,    55,    59,    61,    67,    70,    72,
+      76,    77,    78,    79,    80,    81,    82,    86,    92,    94,
+      98,   100,   106,   108,   112,   116,   118,   123,   132,   140,
+     146,   154,   155,   156,   157,   161,   166,   170,   172,   177,
+     179,   185,   186,   187
 };
 #endif
 
@@ -1182,13 +1183,13 @@ yyreduce:
   switch (yyn)
     {
   case 3: /* program: error  */
-#line 22 "src/parser.y"
+#line 23 "src/parser.y"
             {YYABORT;}
-#line 1188 "build/parser.tab.c"
+#line 1189 "build/parser.tab.c"
     break;
 
 
-#line 1192 "build/parser.tab.c"
+#line 1193 "build/parser.tab.c"
 
       default: break;
     }
@@ -1381,7 +1382,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 191 "src/parser.y"
+#line 192 "src/parser.y"
 
 
 void yyerror(const char *s) {
@@ -1391,7 +1392,10 @@ void yyerror(const char *s) {
 int main(int argc, char **argv) {
     extern FILE *fout;
     extern FILE *fout_ts;
-
+    extern int ceremonie_count;
+    extern int word_count;
+    extern struct BinaryTreeNode *tabel_simboluri;
+    
     // Initialize output files
     fout = fopen("data/fip.csv", "w");
     if (!fout) {
@@ -1417,11 +1421,14 @@ int main(int argc, char **argv) {
         extern FILE *yyin;
         yyin = file;
     }
-    //inorder(tabel_simboluri, fout_ts);
-    
-
+    fprintf(fout, "Atom lexical,Value,Line,Pozitie in TS\n");
+    fflush(fout);
     if (yyparse() == 0) {
         printf("Syntax is correct!\n");
+        printf("Ceremonie count: %d\n", ceremonie_count);
+        printf("Word count: %d\n", word_count);
+        fprintf(fout_ts, "Position,Value\n");
+        inorder(tabel_simboluri, fout_ts);
         fclose(fout);
         fclose(fout_ts);
         return 0;

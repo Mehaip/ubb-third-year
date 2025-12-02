@@ -57,3 +57,4 @@ void freeTree(struct BinaryTreeNode* root){
         free(root);
     }
 }
+

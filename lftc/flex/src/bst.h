@@ -15,4 +15,5 @@ struct BinaryTreeNode *searchNode(struct BinaryTreeNode* node, char *value);
 void inorder(struct BinaryTreeNode* root, FILE *fout);  // Added FILE* parameter
 void freeTree(struct BinaryTreeNode* root);  // Added cleanup function
 
+
 #endif

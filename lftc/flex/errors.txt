@@ -2,7 +2,7 @@
 
 using namespace std;
 int main(){
-0xG5
+int a =0xG5;
 0x
 0b12
 089

@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "bst.h"
 //#include "globals.h"
 int yylex(void);
 void yyerror(const char *s);
@@ -197,7 +198,10 @@ void yyerror(const char *s) {
 int main(int argc, char **argv) {
     extern FILE *fout;
     extern FILE *fout_ts;
-
+    extern int ceremonie_count;
+    extern int word_count;
+    extern struct BinaryTreeNode *tabel_simboluri;
+    
     // Initialize output files
     fout = fopen("data/fip.csv", "w");
     if (!fout) {
@@ -223,11 +227,14 @@ int main(int argc, char **argv) {
         extern FILE *yyin;
         yyin = file;
     }
-    //inorder(tabel_simboluri, fout_ts);
-    
-
+    fprintf(fout, "Atom lexical,Value,Line,Pozitie in TS\n");
+    fflush(fout);
     if (yyparse() == 0) {
         printf("Syntax is correct!\n");
+        printf("Ceremonie count: %d\n", ceremonie_count);
+        printf("Word count: %d\n", word_count);
+        fprintf(fout_ts, "Position,Value\n");
+        inorder(tabel_simboluri, fout_ts);
         fclose(fout);
         fclose(fout_ts);
         return 0;

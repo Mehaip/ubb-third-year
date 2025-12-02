@@ -27,33 +27,56 @@ identifier (_|{letter})({letter}|{digit}|_)*
 %%
 
 \n  {++num_lines;}
+
+[a-z0-9_]*ceremonie[a-z0-9_]* {fprintf(fout, "CEREMONIE, %s, %d\n", yytext, num_lines);
+                    printf("%d. %s\n", word_count, yytext);
+                    ceremonie_count++;
+                    word_count++;
+                    return IDENTIFIER;}
+
 "using namespace std;" {fprintf(fout, "USING_STATEMENT,%s,%d\n", yytext,num_lines);
+                        printf("%d. %s\n", word_count, yytext);
+                        word_count += 3;
                         return USING_NAMESPACE;}
 
 "#include" {fprintf(fout, "INCLUDE_STATEMENT,%s,%d\n", yytext,num_lines);
+            printf("%d. include\n", word_count);
+            word_count++;
             return INCLUDE;}
 
 "cin" {fprintf(fout, "READ, %s, %d\n", yytext, num_lines);
+        printf("%d. %s\n", word_count, yytext);
+        word_count++;
         return READ;
 }
 
 "cout" {fprintf(fout, "WRITE, %s, %d\n", yytext, num_lines);
+        printf("%d. %s\n", word_count, yytext);
+        word_count++;
         return WRITE;
 }
 
 "return" {fprintf(fout, "RETURN, %s, %d\n", yytext, num_lines);
+        printf("%d. %s\n", word_count, yytext);
+        word_count++;
         return RETURN;
 }
 
 "if" {fprintf(fout, "IF, %s, %d\n", yytext, num_lines);
+        printf("%d. %s\n", word_count, yytext);
+        word_count++;
         return IF;
 }
 
 "else" {fprintf(fout, "ELSE, %s, %d\n", yytext, num_lines);
+        printf("%d. %s\n", word_count, yytext);
+        word_count++;
         return ELSE;
 }
 
 "while" {fprintf(fout, "WHILE, %s, %d\n", yytext, num_lines);
+        printf("%d. %s\n", word_count, yytext);
+        word_count++;
         return WHILE;
 }
 "=" {fprintf(fout, "EQUAL, %s, %d\n", yytext, num_lines);
@@ -87,10 +110,14 @@ identifier (_|{letter})({letter}|{digit}|_)*
      return GREATER_THAN;}
 
 "true"|"false" {
+    printf("%d. %s\n", word_count, yytext);
+    word_count++;
     return BOOLEAN_LITERAL;
 }
 
 {type} {fprintf(fout, "TYPE,%s,%d\n", yytext, num_lines);
+        printf("%d. %s\n", word_count, yytext);
+        word_count++;
         return TYPE;}
 
 0[xX][0-9a-fA-F]+ {
@@ -102,8 +129,10 @@ identifier (_|{letter})({letter}|{digit}|_)*
     } else {
         pos = found->position;
     }
+    printf("%d. %s\n", word_count, yytext);
+    word_count++;
     return NUMBER;
-    
+
 }
 
 0[bB][01]+ {
@@ -115,6 +144,8 @@ identifier (_|{letter})({letter}|{digit}|_)*
     } else {
         pos = found->position;
     }
+        printf("%d. %s\n", word_count, yytext);
+    word_count++;
     fprintf(fout, "HEXA,%s,%d,%d\n", yytext, num_lines, pos);
     return NUMBER;
 
@@ -129,6 +160,8 @@ identifier (_|{letter})({letter}|{digit}|_)*
     } else {
         pos = found->position;
     }
+        printf("%d. %s\n", word_count, yytext);
+    word_count++;
     fprintf(fout, "OCTAL,%s,%d,%d\n", yytext, num_lines, pos);
     return NUMBER;
 
@@ -144,6 +177,8 @@ identifier (_|{letter})({letter}|{digit}|_)*
     } else {
         pos = found->position;
     }
+    printf("%d. %s\n", word_count, yytext);
+    word_count++;
     fprintf(fout, "DOUBLE,%s,%d,%d\n", yytext, num_lines, pos);
     return NUMBER;
 
@@ -159,6 +194,8 @@ identifier (_|{letter})({letter}|{digit}|_)*
     } else {
         pos = found->position;
     }
+    printf("%d. %s\n", word_count, yytext);
+    word_count++;
     fprintf(fout, "INTEGER,%s,%d,%d\n", yytext, num_lines, pos);
     return NUMBER;
 
@@ -180,6 +217,8 @@ identifier (_|{letter})({letter}|{digit}|_)*
     } else {
         pos = found->position;
     }
+    printf("%d. %s\n", word_count, yytext);
+    word_count++;
     fprintf(fout, "IDENTIFIER,%s,%d,%d\n", yytext, num_lines, pos);
     return IDENTIFIER;
 

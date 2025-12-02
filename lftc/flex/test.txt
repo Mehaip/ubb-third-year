@@ -14,5 +14,9 @@ int main(){
     _ident = 0B1;
     cout << a + b + c + _ident;
     a = 10;
+    ceremonie = 10;
+    ceremonie_sufix = 123;
+    prefix_ceremonie = 123;
+    asafsafsaceremonieeq24wqd = 12;
     
 }
