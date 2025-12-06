@@ -13,5 +13,15 @@ int main(int argc, char** argv){
 
     printf("Hello world from rank %d/%d \n", world_rank, world_size);
 
+    if (world_rank == 0){ ///root
+        int number = -1;
+        MPI_Send(&number, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+    }
+    else if(world_rank == 1){
+        int number_received;
+        MPI_Recv(&number_received, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        printf("Hello i am rank %d and i received %d \n", world_rank, number_received);
+    }
+
     MPI_Finalize();
 }
