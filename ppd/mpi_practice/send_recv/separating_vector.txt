@@ -1,0 +1,8 @@
+Avem vector de size 16 (0 - 15) si avem 3 procese (0 - 2)
+6 5 5
+procesul 0: 0 - 5
+procesul 1: 6 - 10 
+procesul 2: 11 - 15
+
+Process size: 16 / 3 = 5 + remainder
+n / process_size + remainder
