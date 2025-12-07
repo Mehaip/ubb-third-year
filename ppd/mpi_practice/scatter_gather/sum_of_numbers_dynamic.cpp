@@ -54,13 +54,14 @@ int main()
     sum = compute_sum(receive_vector, data_count);
     vector<int> sum_array;
     sum_array.resize(world_size);
+    printf("Process %d with sum %d\n", world_rank, sum);
     MPI_Gather(&sum, 1, MPI_INT, sum_array.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     if (world_rank == 0)
     {
         print_vector(sum_array);
         sum = compute_sum(sum_array, world_size);
-        printf("%d\n", sum);
+        printf("Process %d with sum %d\n", world_rank, sum);
     }
 
     MPI_Finalize();

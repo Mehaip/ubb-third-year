@@ -104,8 +104,8 @@ int main(int argc, char*argv[]){
             std::vector<unsigned char> chunk1 (chunk_size);
             std::vector<unsigned char> chunk2 (chunk_size);
 
-            MPI_Recv(chunk1.data(), chunk_size, MPI_UNSIGNED_CHAR, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(chunk2.data(), chunk_size, MPI_UNSIGNED_CHAR, 0, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&chunk1, chunk_size, MPI_UNSIGNED_CHAR, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&chunk2, chunk_size, MPI_UNSIGNED_CHAR, 0, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
             ///calculam cu carry = 0 initial
             for(int i = 0; i < chunk_size; i++){

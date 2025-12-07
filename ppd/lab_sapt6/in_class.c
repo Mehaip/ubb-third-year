@@ -33,17 +33,12 @@ int main(int argc, char*argv[]){
             MPI_Send(&start, 1, MPI_INT,i, 0, MPI_COMM_WORLD);
             MPI_Send(&end, 1, MPI_INT,i, 0, MPI_COMM_WORLD);
             MPI_Send(a + start, end - start, MPI_INT, i, 0, MPI_COMM_WORLD);
-            MPI_Send(b + start, end - start, MPI_INT, 0, 0, MPI_COMM_WORLD);
+            MPI_Send(b + start, end - start, MPI_INT, i, 0, MPI_COMM_WORLD);
             start = end;
             end = end + cat;
         
     }
 
-        for(int i = 1; i < numProcesses; i++){
-            MPI_Recv(&start, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(&end, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(c + start, end - start, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        }
 
         for(int i = 0; i < n; i++){
             printf("%d ", c[i]);
@@ -54,10 +49,6 @@ int main(int argc, char*argv[]){
             MPI_Recv(&end, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(c + start, end - start, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-        }
-
-        for (int i = 0; i < n; i++){
-            
         }
 
         

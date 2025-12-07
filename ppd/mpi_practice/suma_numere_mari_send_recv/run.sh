@@ -1,2 +1,2 @@
-mpic++ file_manager.cpp send_recv.cpp
-mpirun --oversubscribe -np 4 ./a.out
+mpic++ file_manager.cpp scatter_gather.cpp
+mpirun --oversubscribe -np 2 ./a.out
