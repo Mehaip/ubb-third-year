@@ -18,7 +18,7 @@ int f_test(int numar, int x)
     int sum_cif = 0;
     while (numar)
     {
-        sum_cif = numar % 10;
+        sum_cif += numar % 10;
         numar /= 10;
     }
     if (sum_cif < x)
@@ -73,15 +73,14 @@ int main()
         {
             even_worker_processes = odd_worker_processes = worker_processes / 2;
         }
-        cout << "ODD: " << odd_worker_processes << " EVEN: " << even_worker_processes << endl;
+       
         int numbers_half = numere_pozitii_impare.size();
 
         int numbers_per_worker_process = numbers_half / odd_worker_processes;
 
         int remainder = numbers_half % odd_worker_processes;
         int start = 0;
-        cout << endl
-             << endl;
+
         for (int process_rank = 1; process_rank <= worker_processes; process_rank += 2)
         {
             int chunk_size;
@@ -127,7 +126,7 @@ int main()
             MPI_Recv(&chunk_size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             vector<int> chunk(chunk_size);
             MPI_Recv(chunk.data(), chunk_size, MPI_INT, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            cout << "PRIMIT " << world_rank << endl;
+     
             print_vector(chunk);
             for (int i = 0; i < chunk.size(); i++)
             {
@@ -142,10 +141,9 @@ int main()
                     B++;
                 }
             }
-            cout << "OUTPUT\n" << world_rank;
             for (int i = 0; i < chunk.size(); i++)
                 cout << chunk[i] << " ";
-            cout << "\nOUTPUT\n";
+                cout<<endl;
         }
         else if (world_rank % 2 == 0 && world_rank != 0)
         {
@@ -155,7 +153,7 @@ int main()
             MPI_Recv(&chunk_size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             vector<int> chunk(chunk_size);
             MPI_Recv(chunk.data(), chunk_size, MPI_INT, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            cout << "PRIMIT " << world_rank << endl;
+        
             print_vector(chunk);
             for (int i = 0; i < chunk.size(); i++)
             {
@@ -170,10 +168,10 @@ int main()
                     B++;
                 }
             }
-            cout << "OUTPUT\n" << world_rank;
+         
             for (int i = 0; i < chunk.size(); i++)
                 cout << chunk[i] << " ";
-            cout << "\nOUTPUT\n";
+            cout << endl;
         }
 
         MPI_Send(&A, 1, MPI_INT, 1, 3, MPI_COMM_WORLD);
@@ -188,7 +186,7 @@ int main()
         {
             MPI_Recv(&A_rec, 1, MPI_INT, i, 3, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(&B_rec, 1, MPI_INT, i, 4, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            cout << A_rec << " " << B_rec << " " << i << endl;
+     
             A_sum += A_rec;
             B_sum += B_rec;
         }
