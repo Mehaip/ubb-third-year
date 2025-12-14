@@ -1,0 +1,64 @@
+Worker threads:
+
+Mai intai worker thread-urile populeaza 2 liste:
+Cheater List si Student List
+Student list este un linked list care contine toti studentii care NU sunt cheateri (mai jos se explica ce
+sunt cheaterii). Acest student list se modifica in 2 feluri:
+1. Daca studentul nu exista in lista, va fi adaugat la final
+2. Daca studentul exista in lista, i se updateaza nota. (grade += data.grade)
+Cheater List este un linked list care contine toti studentii care au luat nota -1 in oricare dintre teste.
+
+De ce e nevoie de un cheater list? De ce nu ii scoatem cand parcurgem student list?
+Problema este aceasta: Fiind un program care ruleaza cu multiple thread-uri, exista sansa sa se intample urmatorul caz:
+
+Avem in student_list un nod care contine StudentID = 5, TotalGrade = 10.
+Worker 1 primeste student 5 cu nota -1.
+Worker 2 primeste student 5 cu nota 5.
+
+Ambii workeri intra in student list si parcurg lista pana ajung la nodul student 5.
+Mai intai worker 1 ajunge la student 5 si il sterge (deoarece e cheater; are nota -1).
+Pentru ca student5 a fost sters anterior, worker 2 nu ajunge niciodata la student 5, deci se presupune ca acesta nu a fost introdus inca, si il
+adauga la finalul Student_list.
+Astfel, un student care e cheater este reintrodus in lista noastra.
+
+Dupa ce s-au parcurs toate cele 10 fisiere cu note, trebuie sa scoatem cheaterii din student_list.
+Acest lucru va fi facut de un singur thread, deoarece cheater list-ul este sub format de linked list.
+Nu este eficient sa facem parcurgerea unui linked_list in mod paralel. 
+Este o parcurgere secventiala, deoarece linked-list-ul ne lasa sa parcurgem head -> nodes -> tail.
+De aceea folosim doar un thread si paralelismul nu aduce nimic util in acest caz.
+(o alternativa ar fi sa schimbam data_structure-ul cheaterilor in array)
+
+Dupa ce s-au sters toti cheaterii, trebuie sa sortam lista.
+Pentru asta avem un sorted_linked_list. Aici vom introduce studentii in ordinea grade-urilor.
+Fiecare thread da pop la linked_list (scoate primul element din lista), apoi intra in sorted_linked_list
+si adauga unul cate unul dupa niste conditii usoare.
+Va fi o mica competitie pt fiecare thread cand trebuie sa scoata primul element din linked list, 
+insa fiind doar o operatie, nu este semnificativa.
+
+Apoi se afiseaza sorted_linked_list
+
+Reader threads:
+
+Toti readerii sunt pusi intr-un thread pool.
+Un threadpool contine o lista de task-uri. Un task, in aceasta tema, reprezinta
+procesarea informatiilor dintr-un fisier input.
+Noi avem 10 fisiere input, deci in total vom avea 10 taskuri.
+Un thread citeste un fisier input. Prin urmare, pentru 4 thread-uri readeri avem 10 fisiere de citit.
+
+Modul in care functioneaza este urmatorul. Toate threadurile sunt puse in thread pool, si printr-un
+conditional variable asteapta pentru un wake up. Un wake up se intampla in momentul in care se adauga
+un task in lista de task-uri. Atunci, un thread este trezit si incepe procesarea acelui fisier.
+Acest lucru se intampla pentru toti cei 4 workeri. Cand unul termina citirea, asteapta din nou
+pentru un task care e adaugat in enqueue(). 
+Continuam tot asa pana cand toate task-urile sunt facute si se apeleaza shutdown().
+In shutdown(), flagul de stop devine true. Asta inseamna ca toate thread-urile au primit semnalul de stop
+Si se vor distruge.
+
+Datele procesate de aceste thread-uri sunt puse in queue.h de catre readeri folosind push().
+Tineti minte ca in acest timp workerii asteapta, folosind pop(), sa proceseze informatiile ca sa fie adaugate
+in student_list. Aceasta "asteptare" se face folosind conditional variables.
+Un worker asteapta ca queue-ul sa aibe > 0 studenti. Cand se adauga 1 student este notified si il proceseaza.
+Un queue are limita de 100 de studenti. Deci, daca se ajunge la 100, un cv pune readerii sa astepte,
+pana cand queue-ul se elibereaza.
+
+Dupa aceea, vine treaba workerilor, care fac pasii descrisi mai sus (la worker threads)

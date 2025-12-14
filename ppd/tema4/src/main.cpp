@@ -8,16 +8,14 @@ void solve_parallel(int p_r, int p_w);
 
 int main() {
     const int NUM_RUNS = 10;
-    const int NUM_CONFIGS = 6;
+    const int NUM_CONFIGS = 3;
 
     // Configurations: {p_r, p_w}
+    // Lab 5 requirements: p_r=4, p_w=2,4,8
     int configs[NUM_CONFIGS][2] = {
-        {1, 3},   // p=4, p_r=1
-        {1, 7},   // p=8, p_r=1
-        {1, 15},  // p=16, p_r=1
-        {2, 2},   // p=4, p_r=2
-        {2, 6},   // p=8, p_r=2
-        {2, 14}   // p=16, p_r=2
+        {4, 2},   // p=6, p_r=4, p_w=2
+        {4, 4},   // p=8, p_r=4, p_w=4
+        {4, 8}    // p=12, p_r=4, p_w=8
     };
 
     // Store times

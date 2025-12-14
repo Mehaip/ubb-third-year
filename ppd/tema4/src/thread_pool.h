@@ -24,7 +24,7 @@ public:
     {
         for (int i = 0; i < num_threads; i++)
         {
-            threads.emplace_back([this] { // thread immediately starts running (more efficient than push_back)
+            threads.emplace_back([this] {
                 while (true)
                 {
                     function<void()> task;
@@ -36,7 +36,7 @@ public:
                                                                      /// sleeps if: queue empty AND not stopping
                                                                      /// wakes when notified (and rechecks condition)
                         // daca wait e true, se continua rularea
-                        if (stop && tasks.empty())
+                        if (stop && tasks.empty()) ///daca thread-urile primes notify_all in stop inseamna ca toate au fost procesate, iesim din constructo
                             return;
 
                         task = tasks.front();

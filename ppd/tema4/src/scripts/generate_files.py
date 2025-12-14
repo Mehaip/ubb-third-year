@@ -31,8 +31,8 @@ for proj in range(1, 11):
 conn.commit()
 
 for proj in range(1, 11):
-    num_students = random.randint(80, 200)
-    students = list(range(1, 201))  # All 200 IDs
+    num_students = random.randint(80, 500)
+    students = list(range(1, 501))  # All 500 IDs
     random.shuffle(students)
     selected = students[:num_students]
 

@@ -3,86 +3,59 @@
 
 #include <mutex>
 #include <fstream>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
-
-class NodeCheater
-{
-public:
-    NodeCheater *next;
-    int id_student;
-    NodeCheater(int id) : id_student(id), next(nullptr) {}
-};
 
 class CheaterList
 {
 private:
-    
+    std::vector<int> cheater_ids;  // Vector for random access!
     mutex mtx;
 
 public:
-NodeCheater *head;
-    CheaterList() : head(nullptr) {}
+    CheaterList() {}
 
     void addCheater(int id_student)
     {
-        /// check if student is already in list
-        mtx.lock();
-        NodeCheater *current = head;
+        std::lock_guard<std::mutex> lock(mtx);
 
-        while (current != nullptr)
-        {
-            if (current->id_student == id_student)
-            {
-                mtx.unlock();
-                return;
-            }
-            current = current->next;
+        // Check if already in list
+        if (std::find(cheater_ids.begin(), cheater_ids.end(), id_student) != cheater_ids.end()) {
+            return;  // Already exists
         }
 
-        NodeCheater *newNode = new NodeCheater(id_student);
-        if (head == nullptr)
-        {
-            head = newNode;
-        }
-        else
-        {
-            NodeCheater *current = head;
-            while (current->next != nullptr)
-            {
-                current = current->next;
-            }
-            current->next = newNode;
-        }
-
-        mtx.unlock();
+        cheater_ids.push_back(id_student);
     }
 
-    bool containsCheater(int id_student){
-        mtx.lock();
-        NodeCheater *current = head;
+    bool containsCheater(int id_student)
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        return std::find(cheater_ids.begin(), cheater_ids.end(), id_student) != cheater_ids.end();
+    }
 
-        while (current != nullptr)
-        {
-            if (current->id_student == id_student)
-            {
-                mtx.unlock();
-                return true;
-            }
-            current = current->next;
+    // Get cheater at index (for parallel access)
+    int getCheater(size_t index)
+    {
+        // No lock needed - only called after all additions are done
+        if (index < cheater_ids.size()) {
+            return cheater_ids[index];
         }
-        mtx.unlock();
-        return false;
+        return -1;
+    }
+
+    // Get total number of cheaters
+    size_t size() const
+    {
+        return cheater_ids.size();
     }
 
     void saveCheatersToFile(const std::string &filename)
     {
-        NodeCheater *temp = head;
         std::ofstream fout(filename);
-        while (temp != nullptr)
-        {
-            fout << temp->id_student << "\n";
-            temp = temp->next;
+        for (int id : cheater_ids) {
+            fout << id << "\n";
         }
     }
 };
