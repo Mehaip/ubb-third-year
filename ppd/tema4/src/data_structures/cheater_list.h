@@ -11,7 +11,7 @@ using namespace std;
 class CheaterList
 {
 private:
-    std::vector<int> cheater_ids;  // Vector for random access!
+    std::vector<int> cheater_ids; 
     mutex mtx;
 
 public:
@@ -21,9 +21,9 @@ public:
     {
         std::lock_guard<std::mutex> lock(mtx);
 
-        // Check if already in list
+       
         if (std::find(cheater_ids.begin(), cheater_ids.end(), id_student) != cheater_ids.end()) {
-            return;  // Already exists
+            return;  
         }
 
         cheater_ids.push_back(id_student);
@@ -35,17 +35,16 @@ public:
         return std::find(cheater_ids.begin(), cheater_ids.end(), id_student) != cheater_ids.end();
     }
 
-    // Get cheater at index (for parallel access)
+    
     int getCheater(size_t index)
     {
-        // No lock needed - only called after all additions are done
+        
         if (index < cheater_ids.size()) {
             return cheater_ids[index];
         }
         return -1;
     }
 
-    // Get total number of cheaters
     size_t size() const
     {
         return cheater_ids.size();

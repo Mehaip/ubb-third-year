@@ -16,7 +16,7 @@ private:
     std::vector<std::thread> threads;        // vector care contine thread-urile
     std::queue<std::function<void()>> tasks; /// queue de functii readFile()
     std::condition_variable cv;              /// variabila conditionala care signal changes in starea task queue-urilor
-    std::atomic<bool> stop = false;          ///
+    std::atomic<bool> stop = false;          /// stop flag
     std::mutex queue_mutex;                  /// mutex pt shared data
 
 public:
@@ -36,12 +36,12 @@ public:
                                                                      /// sleeps if: queue empty AND not stopping
                                                                      /// wakes when notified (and rechecks condition)
                         // daca wait e true, se continua rularea
-                        if (stop && tasks.empty()) ///daca thread-urile primes notify_all in stop inseamna ca toate au fost procesate, iesim din constructo
+                        if (stop && tasks.empty()) ///daca thread-urile primes notify_all in stop inseamna ca toate au fost procesate, iesim din constructor
                             return;
 
                         task = tasks.front();
                         tasks.pop();
-                    }
+                    } ///lock gets destroyed here
                     task();
                 }
             });

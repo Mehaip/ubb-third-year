@@ -33,9 +33,9 @@ void worker_function(int worker_id, int p_w, BarrierType *worker_barrier, Sorted
         }
     }
 
-    worker_barrier->arrive_and_wait(); // Wait for all workers to finish Phase 1
+    worker_barrier->arrive_and_wait(); 
 
-    // Phase 2: Remove cheaters in PARALLEL 
+   
     size_t num_cheaters = cheater_list->size();
     for (size_t i = worker_id; i < num_cheaters; i += p_w)
     {
@@ -45,7 +45,7 @@ void worker_function(int worker_id, int p_w, BarrierType *worker_barrier, Sorted
         }
     }
 
-    worker_barrier->arrive_and_wait(); // Wait for all workers to finish removing cheaters
+    worker_barrier->arrive_and_wait(); 
 
 
     while (true)

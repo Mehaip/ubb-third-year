@@ -27,7 +27,7 @@ std::vector<Pair> parseDatabaseTable(const std::string &db_path, int project_num
     sqlite3 *db;
     sqlite3_stmt *stmt;
 
-    // Open database connection
+    
     int rc = sqlite3_open(db_path.c_str(), &db);
     if (rc != SQLITE_OK)
     {
@@ -36,7 +36,7 @@ std::vector<Pair> parseDatabaseTable(const std::string &db_path, int project_num
         return student_data;
     }
 
-    // Prepare SQL query
+    
     std::string table_name = "proiect" + std::to_string(project_number);
     std::string sql = "SELECT id, grade FROM " + table_name + ";";
 
@@ -48,7 +48,7 @@ std::vector<Pair> parseDatabaseTable(const std::string &db_path, int project_num
         return student_data;
     }
 
-    // Execute query and fetch results
+    
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
     {
         Pair student_info;
@@ -62,7 +62,7 @@ std::vector<Pair> parseDatabaseTable(const std::string &db_path, int project_num
         std::cerr << "Error during query execution: " << sqlite3_errmsg(db) << std::endl;
     }
 
-    // Clean up
+   
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 

@@ -62,3 +62,14 @@ Un queue are limita de 100 de studenti. Deci, daca se ajunge la 100, un cv pune 
 pana cand queue-ul se elibereaza.
 
 Dupa aceea, vine treaba workerilor, care fac pasii descrisi mai sus (la worker threads)
+
+========== RESULTS ==========
+
+Sequential average: 1681.54 ms
+
+    Config  Avg Time (ms)        Speedup
+----------------------------------------
+   p=6,r=4        1521.21           1.11x
+   p=8,r=4        1095.47           1.53x
+  p=12,r=4        1428.96           1.18x
+Both have 3262 students
