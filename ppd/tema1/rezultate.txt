@@ -1,0 +1,53 @@
+============================================================
+PPD - Matrix Convolution Benchmark - CUDA
+============================================================
+GPU: Tesla T4
+Compute Capability: 7.5
+Total Global Memory: 15095 MB
+Max Threads Per Block: 1024
+
+============================================================
+Testing with N=10, M=10, k=3
+============================================================
+Sequential in-place (avg of 10 runs): 0.70 ms
+
+  [blocks=2]
+    Parallel in-place (avg of 10 runs): 0.00 ms (speedup: infx)
+
+============================================================
+Testing with N=1000, M=1000, k=3
+============================================================
+Sequential in-place (avg of 10 runs): 9.00 ms
+
+  [blocks=2]
+    Parallel in-place (avg of 10 runs): 0.10 ms (speedup: 90.00x)
+
+  [blocks=4]
+    Parallel in-place (avg of 10 runs): 0.00 ms (speedup: infx)
+
+  [blocks=8]
+    Parallel in-place (avg of 10 runs): 0.00 ms (speedup: infx)
+
+  [blocks=16]
+    Parallel in-place (avg of 10 runs): 0.00 ms (speedup: infx)
+
+============================================================
+Testing with N=10000, M=10000, k=3
+============================================================
+Sequential in-place (avg of 10 runs): 99.80 ms
+
+  [blocks=2]
+    Parallel in-place (avg of 10 runs): 3.10 ms (speedup: 32.19x)
+
+  [blocks=4]
+    Parallel in-place (avg of 10 runs): 3.20 ms (speedup: 31.19x)
+
+  [blocks=8]
+    Parallel in-place (avg of 10 runs): 3.00 ms (speedup: 33.27x)
+
+  [blocks=16]
+    Parallel in-place (avg of 10 runs): 3.20 ms (speedup: 31.19x)
+
+============================================================
+All tests completed!
+============================================================

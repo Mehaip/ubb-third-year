@@ -1,60 +1,29 @@
 #ifndef CONVOLUTION_H
 #define CONVOLUTION_H
 
-#include <vector>
 #include <string>
 
-const int MAX_SIZE = 10000;
-const int MAX_KERNEL = 10;
+namespace CudaImpl
+{
+    struct ConvolutionData
+    {
+        int *h_F;
+        int *h_C;
 
-enum class Strategy {
-    HORIZONTAL,
-    VERTICAL,
-    BLOCK
-};
+        int *d_F;
+        int *d_C;
 
-struct ConvolutionConfig {
-    std::string inputFile;
-    std::string outputFile;
-    bool useStatic;
-    bool parallel;
-    int numThreads;
-    Strategy strategy;
-};
-
-namespace StaticArray {
-    void readInput(const std::string& filename, int& n, int& m, int& k);
-    void writeOutput(const std::string& filename, int n, int m);
-    
-    void applyConvolution(int n, int m, int k);
-    void applyConvolutionParallelHorizontal(int n, int m, int k, int numThreads);
-    void applyConvolutionParallelVertical(int n, int m, int k, int numThreads);
-    void applyConvolutionParallelBlock(int n, int m, int k, int numThreads);
-    
-    extern int F[MAX_SIZE][MAX_SIZE];
-    extern int V[MAX_SIZE][MAX_SIZE];
-    extern int C[MAX_KERNEL][MAX_KERNEL];
-}
-
-namespace VectorImpl {
-    struct ConvolutionData {
-        std::vector<std::vector<int>> F;
-        std::vector<std::vector<int>> V;
-        std::vector<std::vector<int>> C;
         int n, m, k;
     };
-    
-    ConvolutionData readInput(const std::string& filename);
-    void writeOutput(const std::string& filename, const ConvolutionData& data);
-    
-    void applyConvolution(ConvolutionData& data);
-    void applyConvolutionParallelHorizontal(ConvolutionData& data, int numThreads);
-    void applyConvolutionParallelVertical(ConvolutionData& data, int numThreads);
-    void applyConvolutionParallelBlock(ConvolutionData& data, int numThreads);
 
-    // Lab 2: In-place convolution functions
-    void applyConvolutionInPlace(ConvolutionData& data);
-    void applyConvolutionInPlaceParallel(ConvolutionData& data, int numThreads);
+    ConvolutionData readInput(const std::string &filename);
+    void writeOutput(const std::string &filename, const ConvolutionData &data);
+
+    // Cleanup function
+    void freeData(ConvolutionData &data);
+
+    void applyConvolutionInPlace(ConvolutionData &data);
+    void applyConvolutionInPlaceParallel(ConvolutionData &data, int numBlocks);
 }
 
-#endif // CONVOLUTION_H
+#endif
